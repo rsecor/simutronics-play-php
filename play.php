@@ -381,7 +381,7 @@ while ( TRUE )
 				{
 					if ( class_exists ( $class ) )
 					{
-						if ( function_exists ( $class . '\socket_write' ) )
+						if ( is_callable ( array ( $class , 'socket_write' ) ) )
 						{
 							$buf = $class_list [ $class ] -> socket_write ( $input ) ;
 						}

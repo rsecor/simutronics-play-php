@@ -11,13 +11,13 @@ class log
 			return ( FALSE ) ;
 		}
 		$this -> { 'log' } = $dir [ 'logs' ] . "/" . date ( "Ymd-His" ) . ".log" ;
-		file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": LOG STARTED" ) ;
+		file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": LOG STARTED\n" ) ;
 		return ( TRUE ) ;
 	}
 
 	public function __deconstruct ( )
 	{
-		file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": LOG ENDED" ) ;
+		file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": LOG ENDED\n" ) ;
 		return ( TRUE ) ;
 	}
 

@@ -248,14 +248,13 @@ else
 		}
 		elseif ( preg_match ( "/^GAMEHOST=/" , $launch [ $line_no ] ) )
 		{
-			$launch [ $line_no ] = "GAMEHOST=chimera.simutronics.com" ;
+			// $launch [ $line_no ] = "GAMEHOST=chimera.simutronics.com" ;
 			$line_split = preg_split ( "/=/" , $launch [ $line_no ] ) ;
 			$game [ 'host' ] = $line_split [ 1 ] ;
 		}
 		elseif ( preg_match ( "/^GAMEPORT=/" , $launch [ $line_no ] ) )
 		{
-# $launch [ $line_no ] = "GAMEPORT=4900" ;
-			$launch [ $line_no ] = "GAMEPORT=10024" ;
+			// $launch [ $line_no ] = "GAMEPORT=10024" ;
 			$line_split = preg_split ( "/=/" , $launch [ $line_no ] ) ;
 			$game [ 'port' ] = $line_split [ 1 ] ;
 		}
@@ -355,7 +354,18 @@ while ( TRUE )
 						}
 						else
 						{
-							$class_list [ $script_name [ 0 ] ] = new $script_name [ 0 ] ( $dir ) ;
+							if ( isset ( $class_list [ $script_name [ 0 ] ] ) )
+							{
+									print "SCRIPT ALREADY RUNNING: " . $script . "\n" ;
+							}
+							else
+							{
+								if ( ! ( $class_list [ $script_name [ 0 ] ] = new $script_name [ 0 ] ( $dir ) ) )
+								{
+									print "SCRIPT NOT INITIALIZED: " . $script . "\n" ;
+									unset ( $class_list [ $script_name [ 0 ] ] ) ;
+								}
+							}
 						}
 					}
 				}
@@ -400,7 +410,7 @@ while ( TRUE )
 			{
 				if ( class_exists ( $class ) )
 				{
-					if ( function_exists ( $class . '\socket_read' ) )
+					if ( is_callable ( array ( $class , 'socket_read' ) ) )
 					{
 						$buf = $class_list [ $class ] -> socket_read ( $buf ) ;
 					}

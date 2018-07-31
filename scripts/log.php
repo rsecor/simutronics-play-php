@@ -21,10 +21,12 @@ class log
 		return ( TRUE ) ;
 	}
 
-	public function socket_read ( $data )
+	public function socket_read ( $gameArray , $buf )
 	{
-		file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $data , FILE_APPEND ) ;
-		return ( $data ) ;
+		file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $buf , FILE_APPEND ) ;
+		$return [ 'gameArray' ] = $gameArray ;
+		$return [ 'buf' ] = $buf ;
+		return ( $return ) ;
 	}
 
 }

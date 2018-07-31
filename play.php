@@ -319,6 +319,8 @@ socket_write ( $socket , $wait , strlen ( $wait ) ) ;
 socket_set_nonblock ( $socket ) ;
 stream_set_blocking ( STDIN , 0 ) ;
 
+$gameArray = array ( ) ;
+
 while ( TRUE )
 {
 	$input_stream = fgetcsv ( STDIN ) ;
@@ -412,7 +414,9 @@ while ( TRUE )
 				{
 					if ( is_callable ( array ( $class , 'socket_read' ) ) )
 					{
-						$buf = $class_list [ $class ] -> socket_read ( $buf ) ;
+						$class_return = $class_list [ $class ] -> socket_read ( $gameArray , $buf ) ;
+						$gameArray = $class_return [ 'gameArray' ] ;
+						$buf = $class_return [ 'buf' ] ;
 					}
 				}
 			}

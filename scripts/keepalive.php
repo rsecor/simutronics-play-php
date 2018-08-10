@@ -9,8 +9,8 @@ class keepalive
 		$this -> { 'seconds' } = 30 ;
 		$this -> { 'time' } = time ( ) ;
 		$this -> { 'VERBS' } [ ] = 'EXPERIENCE' ;
-		$this -> { 'VERBS' } [ ] = 'GLANCE' ;
-		$this -> { 'VERBS' } [ ] = 'LOOK' ;
+		$this -> { 'VERBS' } [ ] = 'LUMNIS' ;
+		$this -> { 'VERBS' } [ ] = 'WHO' ;
 		return ( TRUE ) ;
 	}
 
@@ -18,6 +18,13 @@ class keepalive
 	{
 		file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": LOG ENDED\n" ) ;
 		return ( TRUE ) ;
+	}
+
+	public function socket_read ( $input )
+	{
+		$this -> { 'time' } = time ( ) ;
+		return [ 'input' ] = $input ;
+		return ( $return ) ;
 	}
 
 	public function tick ( $gameArray )

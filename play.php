@@ -389,6 +389,10 @@ while ( TRUE )
 				if ( isset ( $class_list [ $input_split [ 1 ] ] ) )
 				{
 					unset ( $class_list [ $input_split [ 1 ] ] ) ;
+					if ( ! ( isset ( $class_list [ $input_split [ 1 ] ] ) ) )
+					{
+						print "SCRIPT UNLOADED: " . $input_split [ 1 ] . "\n" ;
+					}
 				}
 			}
 			elseif ( strtoupper ( $input_split [ 0 ] ) == 'SHOW' )
@@ -453,7 +457,7 @@ while ( TRUE )
 					{
 						if ( is_callable ( array ( $class , 'socket_write' ) ) )
 						{
-							$buf = $class_list [ $class ] -> socket_write ( $input ) ;
+							$class_return = $class_list [ $class ] -> socket_write ( $input ) ;
 						}
 					}
 				}

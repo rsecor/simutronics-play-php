@@ -3,8 +3,9 @@
 class parse_xml
 {
 
-	public function __construct ( $dir )
+	public function __construct ( $socket , $dir )
 	{
+		$this -> { 'socket' } = $socket ;
 		return ( TRUE ) ;
 	}
 
@@ -16,7 +17,9 @@ class parse_xml
 	public function socket_read ( $gameArray , $buf )
 	{
 		$gameArray = $this -> xml2game ( $gameArray , $buf ) ;
-		return ( $gameArray ) ;
+                $return [ 'gameArray' ] = $gameArray ;
+                $return [ 'buf' ] = $buf ;
+		return ( $return ) ;
 	}
 
 	public function xml2game ( $gameArray , $buf )

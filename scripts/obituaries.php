@@ -3,8 +3,9 @@
 class obituaries
 {
 
-	public function __construct ( $dir )
+	public function __construct ( $socket , $dir )
 	{
+		$this -> { 'socket' } = $socket ;
 		return ( TRUE ) ;
 	}
 

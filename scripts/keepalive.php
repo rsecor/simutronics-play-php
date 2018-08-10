@@ -1,11 +1,16 @@
 <?php
 
-class log
+class keepalive
 {
 
-	public function __construct ( $dir )
+	public function __construct ( $socket , $dir )
 	{
-		$this -> { 'time' } = 1 ;
+		$this -> { 'socket' } = $socket ;
+		$this -> { 'seconds' } = 30 ;
+		$this -> { 'time' } = time ( ) ;
+		$this -> { 'VERBS' } [ ] = 'EXPERIENCE' ;
+		$this -> { 'VERBS' } [ ] = 'GLANCE' ;
+		$this -> { 'VERBS' } [ ] = 'LOOK' ;
 		return ( TRUE ) ;
 	}
 
@@ -15,14 +20,20 @@ class log
 		return ( TRUE ) ;
 	}
 
-	public function socket_read ( $gameArray , $buf )
+	public function tick ( $gameArray )
 	{
-		$this -> { 'time' } ++ ;
-		if ( $this -> { 'time' } > 29 )
+		if ( ( time ( ) - $this -> { 'time' } ) >= $this -> { 'seconds' } )
 		{
-			$this -> { 'time' } = 1 ;
+			$input = $this -> { 'VERBS' } [ array_rand ( $this -> { 'VERBS' } , 1 ) ] ;
+			print "[" . __CLASS__ . "] " . $input . "\n" ;
+			$input .= "\n" ;
+			if ( socket_write ( $this -> { 'socket' } , $input , strlen ( $input ) ) )
+			{
+			}
+			$this -> { 'time' } = time ( ) ;
 		}
-		return ( $buf ) ;
+                $return [ 'gameArray' ] = $gameArray ;
+		return ( $return ) ;
 	}
 
 }

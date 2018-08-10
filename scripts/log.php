@@ -3,8 +3,9 @@
 class log
 {
 
-	public function __construct ( $dir )
+	public function __construct ( $socket , $dir )
 	{
+		$this -> { 'socket' } = $socket ;
 		if ( ! ( file_exists ( $dir [ 'logs' ] ) ) )
 		{
 			mkdir ( $dir [ 'logs' ] ) ;

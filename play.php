@@ -163,6 +163,7 @@ else
 	foreach ( $game_list as $game_no => $game_info )
 	{
 		print $game_no . ": " . $game_info [ 'code' ] . ": " . $game_info [ 'name' ] . "\n" ;
+		$game_code_list [ $game_info [ 'code' ] ] = $game_info [ 'code' ] ;
 	}
 	while ( empty ( $game_code ) )
 	{
@@ -180,6 +181,7 @@ else
 			}
 		}
 	}
+	$game_name = $game_code_list [ $game_code ] ;
 	// print "Entering " . $game_name . "\n" ;
 	fwrite ( $fp , "G\t" . $game_code . "\n" ) ;
 	$stub = preg_split ( "/\t/ " , fread ( $fp , 1024 ) ) ;
@@ -343,6 +345,20 @@ $gameArray = array ( ) ;
 
 while ( TRUE )
 {
+	if ( isset ( $class_list ) )
+	{
+		foreach ( $class_list as $class => $class_info )
+		{
+			if ( class_exists ( $class ) )
+			{
+				if ( is_callable ( array ( $class , 'tick' ) ) )
+				{
+					$class_return = $class_list [ $class ] -> tick ( $gameArray ) ;
+					$gameArray = $class_return [ 'gameArray' ] ;
+				}
+			}
+		}
+	}
 	$input_stream = fgetcsv ( STDIN ) ;
 	if ( is_array ( $input_stream ) )
 	{
@@ -410,11 +426,11 @@ while ( TRUE )
 						{
 							if ( isset ( $class_list [ $script_name [ 0 ] ] ) )
 							{
-									print "SCRIPT ALREADY RUNNING: " . $script . "\n" ;
+								print "SCRIPT ALREADY RUNNING: " . $script . "\n" ;
 							}
 							else
 							{
-								if ( ! ( $class_list [ $script_name [ 0 ] ] = new $script_name [ 0 ] ( $dir ) ) )
+								if ( ! ( $class_list [ $script_name [ 0 ] ] = new $script_name [ 0 ] ( $socket , $dir ) ) )
 								{
 									print "SCRIPT NOT INITIALIZED: " . $script . "\n" ;
 									unset ( $class_list [ $script_name [ 0 ] ] ) ;
@@ -483,7 +499,7 @@ exit ;
 
 function play_error_handler ( $error_no , $error_string , $error_file , $error_line )
 {
-	print "ERROR: " . $error_no . ": " . $error_string . "\n" ;
+	print "ERROR: " . $error_no . ": " . $error_file . ": " . $error_line . ": " . $error_string . "\n" ;
 	return ( TRUE ) ;
 }
 

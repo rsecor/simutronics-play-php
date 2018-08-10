@@ -47,15 +47,18 @@ class parse_xml
 	private function xml2array ( $domNode )
 	{
 		$array = array ( ) ;
-		$array [ nodeName ] = $domNode -> nodeName ;
-		$array [ nodeType ] = $domNode -> nodeType ;
-		$array [ localName ] = $domNode -> localName ;
-		$array [ nodeValue ] = $domNode -> nodeValue ;
+		$array [ 'nodeName' ] = $domNode -> { 'nodeName' } ;
+		$array [ 'nodeType' ] = $domNode -> { 'nodeType' } ;
+		$array [ 'localName' ] = $domNode -> { 'localName' } ;
+		$array [ 'nodeValue' ] = $domNode -> { 'nodeValue' } ;
 		if ( $domNode -> hasAttributes ( ) )
 		{
 			foreach ( $domNode -> attributes as $attribute )
 			{
-				$array [ $attribute -> name ] = $attribute -> value ;
+				if ( isset ( $attribute -> { 'value' } ) )
+				{
+					$array [ $attribute -> name ] = $attribute -> { 'value' } ;
+				}
 			}
 		}
 		if ( $domNode -> hasChildNodes ( ) )
@@ -77,35 +80,38 @@ class parse_xml
 		{
 			if ( is_array ( $pos_array ) )
 			{
-				$gameArray = $this -> game2array ( $gameArray , $pos_array ) ;
+#				$gameArray = $this -> game2array ( $gameArray , $pos_array ) ;
 			}
 			else
 			{
 				if ( $pos == 'id' )
 				{
-					if ( $pos_array == 'ActiveSpells' )
-					{
-						// print print_r ( $xmlArray , TRUE ) . "\n" ;
-					}
-					elseif ( $pos_array == 'room' )
-					{
-						if ( isset ( $xmlArray [ 'title' ] ) )
+#					if ( $pos_array == 'ActiveSpells' )
+#					{
+#						// print print_r ( $xmlArray , TRUE ) . "\n" ;
+#					}
+#					elseif ( $pos_array == 'room' )
+#					{
+#						if ( isset ( $xmlArray [ 'title' ] ) )
+#						{
+#							$room_title_subtitle = trim ( $xmlArray [ 'title' ] ) ;
+#							if ( isset ( $xmlArray [ 'subtitle' ] ) )
+#							{
+#								$room_title_subtitle = trim ( $xmlArray [ 'title' ] . $xmlArray [ 'subtitle' ] ) ;
+#							}	
+#							if ( ! ( empty ( $room_title_subtitle ) ) )
+#							{
+#								$gameArray [ 'room' ] = $room_title_subtitle ;
+#							}
+#						}	
+#					}
+#					else
+#					{
+						if ( isset ( $xmlArray [ 'value' ] ) )
 						{
-							$room_title_subtitle = trim ( $xmlArray [ 'title' ] ) ;
-							if ( isset ( $xmlArray [ 'subtitle' ] ) )
-							{
-								$room_title_subtitle = trim ( $xmlArray [ 'title' ] . $xmlArray [ 'subtitle' ] ) ;
-							}	
-							if ( ! ( empty ( $room_title_subtitle ) ) )
-							{
-								$gameArray [ 'room' ] = $room_title_subtitle ;
-							}
-						}	
-					}
-					else
-					{
-						$gameArray [ $xmlArray [ 'id' ] ] = $xmlArray [ 'value' ] ;
-					}
+							$gameArray [ $xmlArray [ 'id' ] ] = $xmlArray [ 'value' ] ;
+						}
+#					}
 				}
 			}
 		}

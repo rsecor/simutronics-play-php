@@ -4,7 +4,7 @@
 /*
    Started By: Richard A Secor <rsecor@rsecor.com>
    Started On: (around) 2018-07-01
-   Current Version: 0.0.356
+   Current Version: 0.0.366
 
    Description: This script is to enable a basic connection to various text-based games from Simutronics.
 
@@ -13,6 +13,9 @@
 
  */
 
+ini_set('memory_limit', '-1');
+date_default_timezone_set ( 'UTC' ) ;
+
 set_error_handler ( 'play_error_handler' ) ;
 set_exception_handler ( 'play_exception_handler' ) ;
 
@@ -20,24 +23,41 @@ $dir [ 'base' ] = __DIR__ . "/" ;
 $dir [ 'logs' ] = $dir [ 'base' ] . "logs/" ;
 $dir [ 'scripts' ] = $dir [ 'base' ] . "scripts/" ;
 
-// $username = '' ;
-// $password = '' ;
-// $game_code = '' ;
+if ( PHP_SAPI != "cli" )
+{
+	print $argv[0] . " must be ran in CLI mode.\n" ;
+	exit ;
+}
+
+parse_str ( implode ( '&' , array_slice ( $argv , 1 ) ) , $input ) ;
+
 // $character_code = '' ;
 
-if ( ! ( isset ( $username ) ) )
+print __LINE__ . "\n" ;
+if ( isset ( $input [ 'username' ] ) )
 {
-	$username = '' ;
+	print __LINE__ . "\n" ;
+	if ( ! ( empty ( $input [ 'username' ] ) ) )
+	{
+		print __LINE__ . "\n" ;
+		$username = $input [ 'username' ] ;
+	}
 }
 
-if ( ! ( isset ( $password ) ) )
+if ( isset ( $input [ 'password' ] ) )
 {
-	$password = '' ;
+	if ( ! ( empty ( $input [ 'password' ] ) ) )
+	{
+		$password = $input [ 'password' ] ;
+	}
 }
 
-if ( ! ( isset ( $game_code ) ) )
+if ( isset ( $input [ 'game_code' ] ) )
 {
-	$game_code = '' ;
+	if ( ! ( empty ( $input [ 'game_code' ] ) ) )
+	{
+		$game_code = $input [ 'game_code' ] ;
+	}
 }
 
 if ( ! ( isset ( $character_code ) ) )
@@ -142,7 +162,7 @@ else
 	}
 	foreach ( $game_list as $game_no => $game_info )
 	{
-		print $game_no . ": " . $game_info [ 'name' ] . "\n" ;
+		print $game_no . ": " . $game_info [ 'code' ] . ": " . $game_info [ 'name' ] . "\n" ;
 	}
 	while ( empty ( $game_code ) )
 	{
@@ -329,12 +349,44 @@ while ( TRUE )
 		print "--------------------------------------------------------------------------------\n" ;
 		if ( preg_match ( "/^;/" , $input_stream [ 0 ] ) )
 		{
-			$input_split = preg_split ( "/\ /" , $input_stream [ 0 ] ) ;
-			if ( strtoupper ( $input_split [ 0 ] ) == 'SHOW' )
+			$input_split = preg_split ( "/\ /" , preg_replace ( "/^;/" , "" , $input_stream [ 0 ] ) ) ;
+			if ( ( strtoupper ( $input_split [ 0 ] ) == 'LOAD' ) || ( strtoupper ( $input_split [ 0 ] ) == 'LOAD' ) )
+			{
+				if ( isset ( $class_list [ $input_split [ 1 ] ] ) )
+				{
+					$script_name = preg_split ( "/\ / " , preg_replace ( "/^;/" , "" , $input_stream [ 0 ] ) ) ;
+					if ( ! ( file_exists ( $script ) ) )
+					{
+						print "SCRIPT NOT AVAILABLE: " . $script . "\n" ;
+					}
+					elseif ( ! ( runkit_import ( $script_name ) ) )
+					{
+						print "SCRIPT NOT INCLUDED: " . $script . "\n" ;
+					}
+					else
+					{
+					}
+				}
+			}
+			elseif ( strtoupper ( $input_split [ 0 ] ) == 'UNLOAD' )
+			{
+				if ( isset ( $class_list [ $input_split [ 1 ] ] ) )
+				{
+					unset ( $class_list [ $input_split [ 1 ] ] ) ;
+				}
+			}
+			elseif ( strtoupper ( $input_split [ 0 ] ) == 'SHOW' )
 			{
 				if ( strtoupper ( $input_split [ 1 ] ) == 'RUNNING' )
 				{
-					print "Scripts Running: " . print_r ( $class_list , TRUE ) ;
+					if ( isset ( $class_list ) )
+					{
+						print "Scripts Running: " . print_r ( $class_list , TRUE ) ;
+					}
+					else
+					{
+						print "No scripts currently running.\n" ;
+					}
 				}
 			}
 			else

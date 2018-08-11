@@ -20,10 +20,11 @@ class keepalive
 		return ( TRUE ) ;
 	}
 
-	public function socket_read ( $input )
+	public function socket_read ( $gameArray , $buf ) ;
 	{
 		$this -> { 'time' } = time ( ) ;
-		$return [ 'input' ] = $input ;
+		$return [ 'gameArray' ] = $gameArray ;
+		$return [ 'buf' ] = $buf ;
 		return ( $return ) ;
 	}
 

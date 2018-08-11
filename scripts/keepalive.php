@@ -20,7 +20,7 @@ class keepalive
 		return ( TRUE ) ;
 	}
 
-	public function socket_read ( $gameArray , $buf ) ;
+	public function socket_read ( $gameArray , $buf )
 	{
 		$this -> { 'time' } = time ( ) ;
 		$return [ 'gameArray' ] = $gameArray ;

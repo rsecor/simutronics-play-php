@@ -23,7 +23,7 @@ class keepalive
 	public function socket_read ( $input )
 	{
 		$this -> { 'time' } = time ( ) ;
-		return [ 'input' ] = $input ;
+		$return [ 'input' ] = $input ;
 		return ( $return ) ;
 	}
 

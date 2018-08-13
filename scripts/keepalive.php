@@ -6,8 +6,8 @@ class keepalive
 	public function __construct ( $socket , $dir )
 	{
 		$this -> { 'socket' } = $socket ;
-		$this -> { 'seconds' } = 30 ;
-		$this -> { 'time' } = time ( ) ;
+		// $this -> { 'seconds' } = 30 ;
+		// $this -> { 'time' } = time ( ) ;
 		$this -> { 'VERBS' } [ ] = 'EXPERIENCE' ;
 		$this -> { 'VERBS' } [ ] = 'LUMNIS' ;
 		$this -> { 'VERBS' } [ ] = 'WHO' ;
@@ -22,12 +22,22 @@ class keepalive
 
 	public function socket_read ( $gameArray , $buf )
 	{
+		if ( preg_match ( "/YOU HAVE BEEN IDLE TOO LONG. PLEASE RESPOND./i" , $buf ) )
+		{
+			$input = $this -> { 'VERBS' } [ array_rand ( $this -> { 'VERBS' } , 1 ) ] ;
+			print "[" . __CLASS__ . "] " . $input . "\n" ;
+			$input .= "\n" ;
+			if ( socket_write ( $this -> { 'socket' } , $input , strlen ( $input ) ) )
+			{
+			}
+		}
 		$this -> { 'time' } = time ( ) ;
 		$return [ 'gameArray' ] = $gameArray ;
 		$return [ 'buf' ] = $buf ;
 		return ( $return ) ;
 	}
 
+/*
 	public function tick ( $gameArray )
 	{
 		if ( ( time ( ) - $this -> { 'time' } ) >= $this -> { 'seconds' } )
@@ -43,5 +53,6 @@ class keepalive
                 $return [ 'gameArray' ] = $gameArray ;
 		return ( $return ) ;
 	}
+*/
 
 }

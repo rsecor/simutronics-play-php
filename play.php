@@ -19,9 +19,9 @@ date_default_timezone_set ( 'UTC' ) ;
 set_error_handler ( 'play_error_handler' ) ;
 set_exception_handler ( 'play_exception_handler' ) ;
 
-$dir [ 'base' ] = __DIR__ . "/" ;
-$dir [ 'logs' ] = $dir [ 'base' ] . "logs/" ;
-$dir [ 'scripts' ] = $dir [ 'base' ] . "scripts/" ;
+$dir [ 'base' ] = __DIR__ ;
+$dir [ 'logs' ] = $dir [ 'base' ] . "/logs" ;
+$dir [ 'scripts' ] = $dir [ 'base' ] . "/scripts" ;
 
 if ( PHP_SAPI != "cli" )
 {
@@ -366,23 +366,13 @@ while ( TRUE )
 		if ( preg_match ( "/^;/" , $input_stream [ 0 ] ) )
 		{
 			$input_split = preg_split ( "/\ /" , preg_replace ( "/^;/" , "" , $input_stream [ 0 ] ) ) ;
-			if ( ( strtoupper ( $input_split [ 0 ] ) == 'LOAD' ) || ( strtoupper ( $input_split [ 0 ] ) == 'LOAD' ) )
+			if ( strtoupper ( $input_split [ 0 ] ) == 'HELP' )
 			{
-				if ( isset ( $class_list [ $input_split [ 1 ] ] ) )
-				{
-					$script_name = preg_split ( "/\ / " , preg_replace ( "/^;/" , "" , $input_stream [ 0 ] ) ) ;
-					if ( ! ( file_exists ( $script ) ) )
-					{
-						print "SCRIPT NOT AVAILABLE: " . $script . "\n" ;
-					}
-					elseif ( ! ( runkit_import ( $script_name ) ) )
-					{
-						print "SCRIPT NOT INCLUDED: " . $script . "\n" ;
-					}
-					else
-					{
-					}
-				}
+				print "To start a script: ';scriptname'\n" ;
+				print "To unload a script: ';UNLOAD scriptname' -- UNLOADing a script will not allow changes when restarting the script.\n" ;
+				print "To show running scripts: ';SHOW RUNNING'\n" ;
+				print "\n" ;
+				print "Changes to scripts will only take effect after restarting play.php\n" ;
 			}
 			elseif ( strtoupper ( $input_split [ 0 ] ) == 'UNLOAD' )
 			{
@@ -401,7 +391,19 @@ while ( TRUE )
 				{
 					if ( isset ( $class_list ) )
 					{
-						print "Scripts Running: " . print_r ( $class_list , TRUE ) ;
+						if ( count ( $class_list ) ) 
+						{
+							print "Scripts Running:\n" ;
+							foreach ( $class_list as $class_name => $class_info )
+							{
+								print $class_name . "\n" ;
+							}
+						}
+						else
+						{
+							print "No scripts currently running.\n" ;
+							unset ( $class_list ) ;
+						}
 					}
 					else
 					{
@@ -417,7 +419,7 @@ while ( TRUE )
 				{
 					if ( ! ( empty ( $script_name [ 0 ] ) ) )
 					{
-						$script = $dir [ 'scripts' ] . $script_name [ 0 ] . ".php" ;
+						$script = $dir [ 'scripts' ] . "/" . $script_name [ 0 ] . ".php" ;
 						if ( ! ( file_exists ( $script ) ) )
 						{
 							print "SCRIPT NOT AVAILABLE: " . $script . "\n" ;

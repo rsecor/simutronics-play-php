@@ -115,14 +115,14 @@ if ( $fp = stream_socket_client ( $play , $errno , $errstr , 30 ) )
 		{
 			if ( trim ( $loginkey [ 2 ] ) == 'PASSWORD' )
 			{
-				print "ERROR #" . __LINE__ . ": Bad Password\n" 
+				print "ERROR #" . __LINE__ . ": Bad Password\n" ;
 				fclose ( $fp ) ;
 				exit ;
 			}
 		}
 		else
 		{
-			print "ERROR #" . __LINE__ . ": Bad Password\n" 
+			print "ERROR #" . __LINE__ . ": Bad Password\n" ;
 			fclose ( $fp ) ;
 			exit ;
 		}

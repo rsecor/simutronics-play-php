@@ -8,9 +8,6 @@
 
    Description: This script is to enable a basic connection to various text-based games from Simutronics.
 
-   $game_code can be set in advance to ignore the prompt to choose a game.
-   $char_code can be set in advance to ignore the prompt to choose a character.
-
  */
 
 ini_set('memory_limit', '-1');
@@ -30,8 +27,6 @@ if ( PHP_SAPI != "cli" )
 }
 
 parse_str ( implode ( '&' , array_slice ( $argv , 1 ) ) , $input ) ;
-
-// $character_code = '' ;
 
 print __LINE__ . "\n" ;
 if ( isset ( $input [ 'username' ] ) )
@@ -60,9 +55,12 @@ if ( isset ( $input [ 'game_code' ] ) )
 	}
 }
 
-if ( ! ( isset ( $character_code ) ) )
+if ( isset ( $input [ 'character_code' ] ) )
 {
-	$character_code = '' ;
+	if ( ! ( empty ( $input [ 'character_code' ] ) ) )
+	{
+		$character_code = $input [ 'character_code' ] ;
+	}
 }
 
 // Clear screen -- where available on platform
@@ -201,7 +199,7 @@ else
 			{
 				$character_no ++ ;
 				$character_list [ $character_no ] [ 'code' ] = $characters [ $characters_no - 1 ] ;
-				$character_list [ $character_no ] [ 'name' ] = $characters [ $characters_no ] ;
+				$character_list [ $character_no ] [ 'name' ] = trim ( $characters [ $characters_no ] ) ;
 			}
 		}
 	}
@@ -212,7 +210,7 @@ else
 	}
 	foreach ( $character_list as $character_no => $character_info )
 	{
-		print $character_no . ": " . $character_info [ 'name' ] . "\n" ;
+		print $character_no . ": " . $character_info [ 'name' ] . " (" . $character_info [ 'code' ] . ")\n" ;
 	}
 	while ( empty ( $character_code ) )
 	{
@@ -226,8 +224,14 @@ else
 			if ( isset ( $character_list [ $character_no ] [ 'code' ] ) )
 			{
 				$character_code = $character_list [ $character_no ] [ 'code' ] ;
-				$character_name = $character_list [ $character_no ] [ 'name' ] ;
 			}
+		}
+	}
+	if ( isset ( $character_list [ $character_no ] ) )
+	{
+		if ( isset ( $character_list [ $character_no ] [ 'code' ] ) )
+		{
+			$character_name = $character_list [ $character_no ] [ 'name' ] ;
 		}
 	}
 	print "Entering " . $game_name . " as " . $character_name . "\n" ;

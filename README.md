@@ -8,12 +8,13 @@ The CLA exist so that you do not have to go through all the menus.
 You can find a Game Code by running the script and looking at the available ones in the list when you get to that step.  
 
 Usage:  
-./play.php username="USERNAME" password="PASSWORD" game_code="GAMECODE"  
+./play.php username="USERNAME" password="PASSWORD" game_code="GAMECODE" character_code="CHARCODE"
 
 Where:  
 USERNAME is your play.net username  
 PASSWORD is your play.net password  
 GAMECODE is the gamecode for the game you want to connect to  
+CHARCODE is the character code you want to connect to
 
 Known Game Codes (as of 2018-08-13):  
 CS: CyberStrike   

@@ -11,7 +11,7 @@ class death
 		$this -> { 'location' } [ "(.*) just got squashed!" ] = "Cysaegir" ;	
 		$this -> { 'location' } [ "(.*) has gone to feed the fishes!" ] = "River's Rest / Citadel" ;
 		$this -> { 'location' } [ "(.*) just bit the dust!" ] = "Wehnimer's Landing" ;
-		$this -> { 'location' } [ "(.*) just turned her last page!" ] = "Ta'Illistim / OTF" ;
+		$this -> { 'location' } [ "(.*) just turned (.*) last page!" ] = "Ta'Illistim / OTF" ;
 		$this -> { 'location' } [ "(.*) was just put on ice!" ] = "Icemule Trace" ;
 		$this -> { 'location' } [ "(.*) just punched a one-way ticket!" ] = "Teras Isle / Ruined Temple" ;
 		$this -> { 'location' } [ "(.*) is going home on his shield!" ] = "Ta'Vaalor" ;
@@ -22,7 +22,7 @@ class death
 		$this -> { 'location' } [ "The death cry of (.*) echoes in your mind!" ] = "The Rift" ;
 		$this -> { 'location' } [ "(.*) (.*) in the Elemental Confluence!" ] = "Elemental Confluence" ;
 		$this -> { 'location' } [ "(.*) just gave up the ghost!" ] = "Castle Varunar / Trail to Solhaven / Trail to Icemule" ;
-		$this -> { 'location' } [ "(.*)'s flame just burnt out in the Sea of Fire!" ] = "Sanctum of Scales" ;
+		$this -> { 'location' } [ "(.*) flame just burnt out in the Sea of Fire!" ] = "Sanctum of Scales" ;
 		$this -> { 'location' } [ "(.*) just lost his way somewhere in the Settlement of Reim!" ] = "Reim" ;
 		$this -> { 'location' } [ "(.*) just perished defending a fortress within Reim!" ] = "Reim Fortress Defense" ;
 		$this -> { 'location' } [ "(.*) just defeated in Duskruin Arena!" ] = "Duskruin Arena" ;
@@ -61,7 +61,7 @@ class death
 				{
 					if ( preg_match_all ( '/ noun="(.*)">(.*)<\/a>/i' , $split1 [ 1 ] , $matches ) )
 					{
-						if ( $matches [ 1 ] [ 0 ] == $matches [ 2 ] [ 0 ] )
+						if ( preg_match ( "/^" . $matches [ 1 ] [ 0 ] . "/i",  $matches [ 2 ] [ 0 ] ) )
 						{
 							$character_name = $matches [ 1 ] [ 0 ] ;
 						}
@@ -84,7 +84,7 @@ class death
 				if ( isset ( $death_location ) )
 				{
 					print '[' . __CLASS__ . ']: ' . $character_name . ' has died near ' . $death_location . "\n" ;
-			                file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ":" . $death_location . "\n" , FILE_APPEND ) ;
+			                file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ": " . $death_location . "\n" , FILE_APPEND ) ;
 				}
 				else
 				{
@@ -98,7 +98,7 @@ class death
 				{
 					print $buf ;
 					print '[' . __CLASS__ . ']: ' . 'UNKNOWN' . ' has died near ' . $death_location . "\n" ;
-			                file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . 'UNKNOWN' . ":" . $death_location . "\n" , FILE_APPEND ) ;
+			                file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . 'UNKNOWN' . ": " . $death_location . "\n" , FILE_APPEND ) ;
 				}
 				else
 				{

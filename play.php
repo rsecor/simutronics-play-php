@@ -28,6 +28,7 @@ if ( PHP_SAPI != "cli" )
 
 parse_str ( implode ( '&' , array_slice ( $argv , 1 ) ) , $input ) ;
 
+$background = 0 ;
 if ( isset ( $input [ 'background' ] ) )
 {
 	if ( ! ( empty ( $input [ 'background' ] ) ) )

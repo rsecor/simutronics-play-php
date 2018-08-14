@@ -28,13 +28,18 @@ if ( PHP_SAPI != "cli" )
 
 parse_str ( implode ( '&' , array_slice ( $argv , 1 ) ) , $input ) ;
 
-print __LINE__ . "\n" ;
+if ( isset ( $input [ 'background' ] ) )
+{
+	if ( ! ( empty ( $input [ 'background' ] ) ) )
+	{
+		$background = $input [ 'background' ] ;
+	}
+}
+
 if ( isset ( $input [ 'username' ] ) )
 {
-	print __LINE__ . "\n" ;
 	if ( ! ( empty ( $input [ 'username' ] ) ) )
 	{
-		print __LINE__ . "\n" ;
 		$username = $input [ 'username' ] ;
 	}
 }
@@ -110,14 +115,14 @@ if ( $fp = stream_socket_client ( $play , $errno , $errstr , 30 ) )
 		{
 			if ( trim ( $loginkey [ 2 ] ) == 'PASSWORD' )
 			{
-				print "Bad Password\n" ;
+				print "ERROR #" . __LINE__ . ": Bad Password\n" 
 				fclose ( $fp ) ;
 				exit ;
 			}
 		}
 		else
 		{
-			print "Bad Password\n" ;
+			print "ERROR #" . __LINE__ . ": Bad Password\n" 
 			fclose ( $fp ) ;
 			exit ;
 		}
@@ -363,7 +368,14 @@ while ( TRUE )
 			}
 		}
 	}
-	$input_stream = fgetcsv ( STDIN ) ;
+	if ( $background == 1 )
+	{
+		$input_stream = '' ;
+	}
+	else
+	{
+		$input_stream = fgetcsv ( STDIN ) ;
+	}
 	if ( is_array ( $input_stream ) )
 	{
 		print "--------------------------------------------------------------------------------\n" ;

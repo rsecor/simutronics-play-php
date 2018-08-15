@@ -404,23 +404,12 @@ while ( TRUE )
 		{
 			if ( class_exists ( $class ) )
 			{
-				if ( ! ( $done_init ) )
-				{
-					if ( is_callable ( array ( $class , 'init' ) ) )
-					{
-						$class_list [ $class ] -> init ( $socket ) ;
-					}
-				}
 				if ( is_callable ( array ( $class , 'tick' ) ) )
 				{
 					$class_return = $class_list [ $class ] -> tick ( $gameArray ) ;
 					$gameArray = $class_return [ 'gameArray' ] ;
 				}
 			}
-		}
-		if ( ! ( $done_init ) )
-		{
-			$done_init = TRUE ;
 		}
 	}
 	if ( $background == 1 )
@@ -550,11 +539,11 @@ while ( TRUE )
 					break ;
 				default :
 			}
+			print "] " ;
 		}
 	}
-	if ( $buf = socket_read ( $socket , 9999999 ) )
+	if ( $buf = socket_read ( $socket , 65536 , PHP_BINARY_READ ) )
 	{
-		print "================================================================================\n" ;
 		if ( isset ( $class_list ) )
 		{
 			foreach ( $class_list as $class => $class_info )
@@ -570,7 +559,28 @@ while ( TRUE )
 				}
 			}
 		}
-		print $buf . "\n" ;
+		if ( ! ( $done_init ) )
+		{
+			if ( preg_match ( "/Important Information/i" , $buf ) )
+			{
+				if ( isset ( $class_list ) )
+				{
+					foreach ( $class_list as $class => $class_info )
+					{
+						if ( class_exists ( $class ) )
+						{
+							if ( is_callable ( array ( $class , 'init' ) ) )
+							{
+								$class_list [ $class ] -> init ( $socket ) ;
+							}
+						}
+					}
+				}
+			}
+			$done_init = TRUE ;
+		}
+		print $buf ;
+		print "] " ;
 	}
 }
 

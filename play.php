@@ -326,8 +326,6 @@ if ( $socket === FALSE )
 	exit ;
 }
 
-// autostart
-
 $play = 'tcp://' . $game [ 'host' ] . ':' . $game [ 'port' ] ;
 print "Connecting to " . $play . "\n" ;
 $result = socket_connect ( $socket , $game [ 'host' ] , $game [ 'port' ] ) ;
@@ -337,7 +335,44 @@ if ( $result === FALSE )
 	exit ;
 }
 
-print "Connected...\n" ;
+// autostart
+$autostart_file = $dir [ 'character' ] . "/autostart.txt" ;
+if ( file_exists ( $autostart_file ) )
+{
+	if ( $autostart_list = file ( $autostart_file ) )
+	{
+		foreach ( $autostart_list as $autostart_no => $autostart_script )
+		{
+			$autostart_script = trim ( $autostart_script ) ;
+			print "AUTOSTART SCRIPT: '" . $autostart_script . "'\n"  ;
+			$script = $dir [ 'scripts' ] . "/" . $autostart_script . ".php" ;
+			if ( ! ( file_exists ( $script ) ) )
+			{
+				print "SCRIPT NOT AVAILABLE: " . $script . "\n" ;
+			}
+			elseif ( ! ( include_once ( $script ) ) )
+			{
+				print "SCRIPT NOT INCLUDED: " . $script . "\n" ;
+			}
+			else
+			{
+				if ( isset ( $class_list [ $autostart_script ] ) )
+				{
+					print "SCRIPT ALREADY RUNNING: " . $script . "\n" ;
+				}
+				else
+				{
+					if ( ! ( $class_list [ $autostart_script ] = new $autostart_script ( $socket , $dir ) ) )
+					{
+						print "SCRIPT NOT INITIALIZED: " . $script . "\n" ;
+						unset ( $class_list [ $autostart_script ] ) ;
+					}
+				}
+			}
+		}
+	}
+}
+
 socket_write ( $socket , $game [ 'key' ] , ( strlen ( $game [ 'key' ] ) ) )  ;
 $buf = socket_read ( $socket , 2048 ) ;
 print "================================================================================\n" ;
@@ -359,6 +394,8 @@ stream_set_blocking ( STDIN , 0 ) ;
 
 $gameArray = array ( ) ;
 
+$done_init = FALSE ;
+
 while ( TRUE )
 {
 	if ( isset ( $class_list ) )
@@ -367,12 +404,23 @@ while ( TRUE )
 		{
 			if ( class_exists ( $class ) )
 			{
+				if ( ! ( $done_init ) )
+				{
+					if ( is_callable ( array ( $class , 'init' ) ) )
+					{
+						$class_list [ $class ] -> init ( $socket ) ;
+					}
+				}
 				if ( is_callable ( array ( $class , 'tick' ) ) )
 				{
 					$class_return = $class_list [ $class ] -> tick ( $gameArray ) ;
 					$gameArray = $class_return [ 'gameArray' ] ;
 				}
 			}
+		}
+		if ( ! ( $done_init ) )
+		{
+			$done_init = TRUE ;
 		}
 	}
 	if ( $background == 1 )
@@ -463,6 +511,10 @@ while ( TRUE )
 								{
 									print "SCRIPT NOT INITIALIZED: " . $script . "\n" ;
 									unset ( $class_list [ $script_name [ 0 ] ] ) ;
+								}
+								if ( is_callable ( array ( $class_list [ $script_name [ 0 ] ] , 'init' ) ) )
+								{
+									$class_list [ $script_name [ 0 ] ] -> init ( $socket ) ;
 								}
 							}
 						}

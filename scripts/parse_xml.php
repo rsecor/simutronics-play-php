@@ -6,7 +6,6 @@ class parse_xml
 	public function __construct ( $socket , $dir )
 	{
 		$this -> { 'socket' } = $socket ;
-		return ( TRUE ) ;
 	}
 
 	public function __deconstruct ( )

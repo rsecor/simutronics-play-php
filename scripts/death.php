@@ -5,8 +5,6 @@ class death
 
 	public function __construct ( $socket , $dir )
 	{
-		$this -> { 'socket' } = $socket ;
-
 		// INFO - https://gswiki.play.net/Death%27s_Sting#Death_Messaging
 		$this -> { 'location' } [ "(.*) just got squashed!" ] = "Cysaegir" ;	
 		$this -> { 'location' } [ "(.*) has gone to feed the fishes!" ] = "River's Rest / Citadel" ;
@@ -38,17 +36,22 @@ class death
                         mkdir ( $dir_log , 0750 , TRUE ) ;
                 }
                 $this -> { 'log' } = $dir_log . "/" . date ( "Ymd-His" ) . ".log" ;
-		$input = "flag ShowDeaths on\n" ;
-		print '[' . __CLASS__ . ']: ' . $input ;
-		if ( socket_write ( $this -> { 'socket' } , $input , strlen ( $input ) ) )
-		{
-		}
+		$this -> { 'socket' } = $socket ;
 		return ( TRUE ) ;
 	}
 
 	public function __deconstruct ( )
 	{
 		return ( TRUE ) ;
+	}
+
+	public function init ( $socket )
+	{
+		$input = "flag ShowDeaths on\n" ;
+		print '[' . __CLASS__ . ']: ' . $input ;
+		if ( socket_write ( $this -> { 'socket' } , $input , strlen ( $input ) ) )
+		{
+		}
 	}
 
 	public function socket_read ( $gameArray , $buf )

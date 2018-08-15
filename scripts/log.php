@@ -9,7 +9,7 @@ class log
 		$dir_log = $dir [ 'character' ] . "/" . __CLASS__ ;
 		if ( ! ( file_exists ( $dir_log ) ) )
 		{
-			mkdir ( $dir_log ) ;
+			mkdir ( $dir_log , 0750 , TRUE ) ;
 			return ( FALSE ) ;
 		}
 		$this -> { 'log' } = $dir_log . "/" . date ( "Ymd-His" ) . ".log" ;

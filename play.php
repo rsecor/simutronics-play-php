@@ -243,7 +243,7 @@ else
 	$dir [ 'character' ] = $dir [ 'base' ] . "/" . $game_name . "/" . $character_name ;
 	if ( ! ( file_exists ( $dir [ 'character' ] ) ) )
 	{
-		mkdir ( $dir [ 'character' ] ) ;
+		mkdir ( $dir [ 'character' ] , 0750 , TRUE ) ;
 		return ( FALSE ) ;
 	}
 	fwrite ( $fp , "L\t" . $character_code . "\tSTORM\n" ) ;

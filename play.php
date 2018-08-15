@@ -414,132 +414,131 @@ while ( TRUE )
 	}
 	if ( $background == 1 )
 	{
-		$input_stream = '' ;
 	}
 	else
 	{
 		$input_stream = fgetcsv ( STDIN ) ;
-	}
-	if ( is_array ( $input_stream ) )
-	{
-		print "--------------------------------------------------------------------------------\n" ;
-		if ( preg_match ( "/^;/" , $input_stream [ 0 ] ) )
+		if ( is_array ( $input_stream ) )
 		{
-			$input_split = preg_split ( "/\ /" , preg_replace ( "/^;/" , "" , $input_stream [ 0 ] ) ) ;
-			if ( strtoupper ( $input_split [ 0 ] ) == 'HELP' )
+			print "--------------------------------------------------------------------------------\n" ;
+			if ( preg_match ( "/^;/" , $input_stream [ 0 ] ) )
 			{
-				print "To start a script: ';scriptname'\n" ;
-				print "To unload a script: ';UNLOAD scriptname' -- UNLOADing a script will not allow changes when restarting the script.\n" ;
-				print "To show running scripts: ';SHOW RUNNING'\n" ;
-				print "\n" ;
-				print "Changes to scripts will only take effect after restarting play.php\n" ;
-			}
-			elseif ( strtoupper ( $input_split [ 0 ] ) == 'UNLOAD' )
-			{
-				if ( isset ( $class_list [ $input_split [ 1 ] ] ) )
+				$input_split = preg_split ( "/\ /" , preg_replace ( "/^;/" , "" , $input_stream [ 0 ] ) ) ;
+				if ( strtoupper ( $input_split [ 0 ] ) == 'HELP' )
 				{
-					unset ( $class_list [ $input_split [ 1 ] ] ) ;
-					if ( ! ( isset ( $class_list [ $input_split [ 1 ] ] ) ) )
+					print "To start a script: ';scriptname'\n" ;
+					print "To unload a script: ';UNLOAD scriptname' -- UNLOADing a script will not allow changes when restarting the script.\n" ;
+					print "To show running scripts: ';SHOW RUNNING'\n" ;
+					print "\n" ;
+					print "Changes to scripts will only take effect after restarting play.php\n" ;
+				}
+				elseif ( strtoupper ( $input_split [ 0 ] ) == 'UNLOAD' )
+				{
+					if ( isset ( $class_list [ $input_split [ 1 ] ] ) )
 					{
-						print "SCRIPT UNLOADED: " . $input_split [ 1 ] . "\n" ;
+						unset ( $class_list [ $input_split [ 1 ] ] ) ;
+						if ( ! ( isset ( $class_list [ $input_split [ 1 ] ] ) ) )
+						{
+							print "SCRIPT UNLOADED: " . $input_split [ 1 ] . "\n" ;
+						}
 					}
 				}
-			}
-			elseif ( strtoupper ( $input_split [ 0 ] ) == 'SHOW' )
-			{
-				if ( strtoupper ( $input_split [ 1 ] ) == 'RUNNING' )
+				elseif ( strtoupper ( $input_split [ 0 ] ) == 'SHOW' )
 				{
-					if ( isset ( $class_list ) )
+					if ( strtoupper ( $input_split [ 1 ] ) == 'RUNNING' )
 					{
-						if ( count ( $class_list ) ) 
+						if ( isset ( $class_list ) )
 						{
-							print "Scripts Running:\n" ;
-							foreach ( $class_list as $class_name => $class_info )
+							if ( count ( $class_list ) ) 
 							{
-								print $class_name . "\n" ;
+								print "Scripts Running:\n" ;
+								foreach ( $class_list as $class_name => $class_info )
+								{
+									print $class_name . "\n" ;
+								}
+							}
+							else
+							{
+								print "No scripts currently running.\n" ;
+								unset ( $class_list ) ;
 							}
 						}
 						else
 						{
 							print "No scripts currently running.\n" ;
-							unset ( $class_list ) ;
 						}
 					}
-					else
+				}
+				else
+				{
+					print "RUNNING SCRIPT: '" . $input_stream [ 0 ] . "'\n"  ;
+					$script_name = preg_split ( "/\ / " , preg_replace ( "/^;/" , "" , $input_stream [ 0 ] ) ) ;
+					if ( isset ( $script_name [ 0 ] ) )
 					{
-						print "No scripts currently running.\n" ;
+						if ( ! ( empty ( $script_name [ 0 ] ) ) )
+						{
+							$script = $dir [ 'scripts' ] . "/" . $script_name [ 0 ] . ".php" ;
+							if ( ! ( file_exists ( $script ) ) )
+							{
+								print "SCRIPT NOT AVAILABLE: " . $script . "\n" ;
+							}
+							elseif ( ! ( include_once ( $script ) ) )
+							{
+								print "SCRIPT NOT INCLUDED: " . $script . "\n" ;
+							}
+							else
+							{
+								if ( isset ( $class_list [ $script_name [ 0 ] ] ) )
+								{
+									print "SCRIPT ALREADY RUNNING: " . $script . "\n" ;
+								}
+								else
+								{
+									if ( ! ( $class_list [ $script_name [ 0 ] ] = new $script_name [ 0 ] ( $socket , $dir ) ) )
+									{
+										print "SCRIPT NOT INITIALIZED: " . $script . "\n" ;
+										unset ( $class_list [ $script_name [ 0 ] ] ) ;
+									}
+									if ( is_callable ( array ( $class_list [ $script_name [ 0 ] ] , 'init' ) ) )
+									{
+										$class_list [ $script_name [ 0 ] ] -> init ( $socket ) ;
+									}
+								}
+							}
+						}
 					}
 				}
 			}
 			else
 			{
-				print "RUNNING SCRIPT: '" . $input_stream [ 0 ] . "'\n"  ;
-				$script_name = preg_split ( "/\ / " , preg_replace ( "/^;/" , "" , $input_stream [ 0 ] ) ) ;
-				if ( isset ( $script_name [ 0 ] ) )
+				print "COMMAND: '" . $input_stream [ 0 ] . "'\n"  ;
+				$input = "<c>" . $input_stream [ 0 ] . "\r\n" ;
+				if ( isset ( $class_list ) )
 				{
-					if ( ! ( empty ( $script_name [ 0 ] ) ) )
+					foreach ( $class_list as $class => $class_info )
 					{
-						$script = $dir [ 'scripts' ] . "/" . $script_name [ 0 ] . ".php" ;
-						if ( ! ( file_exists ( $script ) ) )
+						if ( class_exists ( $class ) )
 						{
-							print "SCRIPT NOT AVAILABLE: " . $script . "\n" ;
-						}
-						elseif ( ! ( include_once ( $script ) ) )
-						{
-							print "SCRIPT NOT INCLUDED: " . $script . "\n" ;
-						}
-						else
-						{
-							if ( isset ( $class_list [ $script_name [ 0 ] ] ) )
+							if ( is_callable ( array ( $class , 'socket_write' ) ) )
 							{
-								print "SCRIPT ALREADY RUNNING: " . $script . "\n" ;
-							}
-							else
-							{
-								if ( ! ( $class_list [ $script_name [ 0 ] ] = new $script_name [ 0 ] ( $socket , $dir ) ) )
-								{
-									print "SCRIPT NOT INITIALIZED: " . $script . "\n" ;
-									unset ( $class_list [ $script_name [ 0 ] ] ) ;
-								}
-								if ( is_callable ( array ( $class_list [ $script_name [ 0 ] ] , 'init' ) ) )
-								{
-									$class_list [ $script_name [ 0 ] ] -> init ( $socket ) ;
-								}
+								$class_return = $class_list [ $class ] -> socket_write ( $input ) ;
 							}
 						}
 					}
 				}
-			}
-		}
-		else
-		{
-			print "COMMAND: '" . $input_stream [ 0 ] . "'\n"  ;
-			$input = "<c>" . $input_stream [ 0 ] . "\r\n" ;
-			if ( isset ( $class_list ) )
-			{
-				foreach ( $class_list as $class => $class_info )
+				if ( socket_write ( $socket , $input , strlen ( $input ) ) )
 				{
-					if ( class_exists ( $class ) )
-					{
-						if ( is_callable ( array ( $class , 'socket_write' ) ) )
-						{
-							$class_return = $class_list [ $class ] -> socket_write ( $input ) ;
-						}
-					}
+					$input_history [ ] = $input ;
 				}
+				switch ( strtoupper ( $input_stream [ 0 ] ) )
+				{
+					case 'EXIT' :
+						break 2 ;
+						break ;
+					default :
+				}
+				print "] " ;
 			}
-			if ( socket_write ( $socket , $input , strlen ( $input ) ) )
-			{
-				$input_history [ ] = $input ;
-			}
-			switch ( strtoupper ( $input_stream [ 0 ] ) )
-			{
-				case 'EXIT' :
-					break 2 ;
-					break ;
-				default :
-			}
-			print "] " ;
 		}
 	}
 	if ( $buf = socket_read ( $socket , 65536 , PHP_BINARY_READ ) )
@@ -580,7 +579,10 @@ while ( TRUE )
 			$done_init = TRUE ;
 		}
 		print $buf ;
-		print "] " ;
+		if ( $background != 1 )
+		{
+			print "] " ;
+		}
 	}
 }
 

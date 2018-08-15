@@ -244,7 +244,6 @@ else
 	if ( ! ( file_exists ( $dir [ 'character' ] ) ) )
 	{
 		mkdir ( $dir [ 'character' ] , 0750 , TRUE ) ;
-		return ( FALSE ) ;
 	}
 	fwrite ( $fp , "L\t" . $character_code . "\tSTORM\n" ) ;
 	$launch = preg_split ( "/\t/ " , fread ( $fp , 1024 ) ) ;

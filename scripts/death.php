@@ -36,7 +36,6 @@ class death
                 if ( ! ( file_exists ( $dir_log ) ) )
                 {
                         mkdir ( $dir_log , 0750 , TRUE ) ;
-                        return ( FALSE ) ;
                 }
                 $this -> { 'log' } = $dir_log . "/" . date ( "Ymd-His" ) . ".log" ;
 		$input = "flag ShowDeaths on\n" ;

@@ -17,7 +17,6 @@ set_error_handler ( 'play_error_handler' ) ;
 set_exception_handler ( 'play_exception_handler' ) ;
 
 $dir [ 'base' ] = __DIR__ ;
-$dir [ 'logs' ] = $dir [ 'base' ] . "/logs" ;
 $dir [ 'scripts' ] = $dir [ 'base' ] . "/scripts" ;
 
 if ( PHP_SAPI != "cli" )
@@ -241,6 +240,12 @@ else
 		}
 	}
 	print "Entering " . $game_name . " as " . $character_name . "\n" ;
+	$dir [ 'character' ] = $dir [ 'base' ] . "/" . $game_name . "/" . $character_name ;
+	if ( ! ( file_exists ( $dir [ 'character' ] ) ) )
+	{
+		mkdir ( $dir [ 'character' ] ) ;
+		return ( FALSE ) ;
+	}
 	fwrite ( $fp , "L\t" . $character_code . "\tSTORM\n" ) ;
 	$launch = preg_split ( "/\t/ " , fread ( $fp , 1024 ) ) ;
 	// print "launch: " . print_r ( $launch , TRUE ) . "\n" ;
@@ -321,6 +326,8 @@ if ( $socket === FALSE )
 	print "socket_create failure\n" ;
 	exit ;
 }
+
+// autostart
 
 $play = 'tcp://' . $game [ 'host' ] . ':' . $game [ 'port' ] ;
 print "Connecting to " . $play . "\n" ;

@@ -6,12 +6,13 @@ class log
 	public function __construct ( $socket , $dir )
 	{
 		$this -> { 'socket' } = $socket ;
-		if ( ! ( file_exists ( $dir [ 'logs' ] ) ) )
+		$dir_log = $dir [ 'character' ] . "/" . __CLASS__ ;
+		if ( ! ( file_exists ( $dir_log ) ) )
 		{
-			mkdir ( $dir [ 'logs' ] ) ;
+			mkdir ( $dir_log ) ;
 			return ( FALSE ) ;
 		}
-		$this -> { 'log' } = $dir [ 'logs' ] . "/" . date ( "Ymd-His" ) . ".log" ;
+		$this -> { 'log' } = $dir_log . "/" . date ( "Ymd-His" ) . ".log" ;
 		file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": LOG STARTED\n" ) ;
 		return ( TRUE ) ;
 	}

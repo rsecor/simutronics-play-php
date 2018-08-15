@@ -32,12 +32,13 @@ class death
 		$this -> { 'location' } [ "(.*) was just reunited with her ancestors!" ] = "Ebon Gate Festival - Feywrot Mire" ;
 		$this -> { 'location' } [ "(.*) failed to bring a shrubbery to the Night at the Academy!" ] = "Night at the Academy" ;
 
-                if ( ! ( file_exists ( $dir [ 'logs' ] ) ) )
+                $dir_log = $dir [ 'character' ] . "/" . __CLASS__ ;
+                if ( ! ( file_exists ( $dir_log ) ) )
                 {
-                        mkdir ( $dir [ 'logs' ] ) ;
+                        mkdir ( $dir_log ) ;
                         return ( FALSE ) ;
                 }
-                $this -> { 'log' } = $dir [ 'logs' ] . "/" . date ( "Ymd" ) . "-death.log" ;
+                $this -> { 'log' } = $dir_log . "/" . date ( "Ymd-His" ) . ".log" ;
 		$input = "flag ShowDeaths on\n" ;
 		print '[' . __CLASS__ . ']: ' . $input ;
 		if ( socket_write ( $this -> { 'socket' } , $input , strlen ( $input ) ) )

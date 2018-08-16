@@ -16,18 +16,18 @@ class death
 		$this -> { 'location' } [ "(.*) just took a long walk off of a short pier!" ] = "Solhaven" ;
 		$this -> { 'location' } [ "(.*) is dust in the wind!" ] = "Four Winds Isle" ;
 		$this -> { 'location' } [ "(.*) is six hundred feet under!" ] = "Zul Logoth" ;
-		$this -> { 'location' } [ "(.*) may just be going home on his shield!" ] = "Aradhul Road / Displaced Red Forest" ;
+		$this -> { 'location' } [ "(.*) may just be going home on (.*) shield!" ] = "Aradhul Road / Displaced Red Forest" ;
 		$this -> { 'location' } [ "The death cry of (.*) echoes in your mind!" ] = "The Rift" ;
 		$this -> { 'location' } [ "(.*) (.*) in the Elemental Confluence!" ] = "Elemental Confluence" ;
 		$this -> { 'location' } [ "(.*) just gave up the ghost!" ] = "Castle Varunar / Trail to Solhaven / Trail to Icemule" ;
 		$this -> { 'location' } [ "(.*) flame just burnt out in the Sea of Fire!" ] = "Sanctum of Scales" ;
-		$this -> { 'location' } [ "(.*) just lost his way somewhere in the Settlement of Reim!" ] = "Reim" ;
+		$this -> { 'location' } [ "(.*) just lost (.*) way somewhere in the Settlement of Reim!" ] = "Reim" ;
 		$this -> { 'location' } [ "(.*) just perished defending a fortress within Reim!" ] = "Reim Fortress Defense" ;
 		$this -> { 'location' } [ "(.*) just defeated in Duskruin Arena!" ] = "Duskruin Arena" ;
 		$this -> { 'location' } [ "(.*) just perished underneath Bloodriven Village!" ] = "Duskruin Arena Sewers" ;
 		$this -> { 'location' } [ "(.*) failed within the Bank at Bloodriven!" ] = "Duskruin Bank Heist" ;
 		$this -> { 'location' } [ "(.*) is now fish food for the fauna of Caligos Isle!" ] = "Ebon Gate Festival - Caligos Isle" ;
-		$this -> { 'location' } [ "(.*) was just reunited with her ancestors!" ] = "Ebon Gate Festival - Feywrot Mire" ;
+		$this -> { 'location' } [ "(.*) was just reunited with (.*) ancestors!" ] = "Ebon Gate Festival - Feywrot Mire" ;
 		$this -> { 'location' } [ "(.*) failed to bring a shrubbery to the Night at the Academy!" ] = "Night at the Academy" ;
 
 		$this -> { 'location' } [ "(.*) has been vaporized!" ] = "Night at the Academy" ;

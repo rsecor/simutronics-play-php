@@ -51,6 +51,7 @@ class death
 		print '[' . __CLASS__ . ']: ' . $input ;
 		if ( socket_write ( $this -> { 'socket' } , $input , strlen ( $input ) ) )
 		{
+			sleep ( 1 ) ;
 		}
 	}
 

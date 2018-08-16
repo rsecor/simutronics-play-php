@@ -12,8 +12,8 @@ class death
 		$this -> { 'location' } [ "(.*) just turned (.*) last page!" ] = "Ta'Illistim / OTF" ;
 		$this -> { 'location' } [ "(.*) was just put on ice!" ] = "Icemule Trace" ;
 		$this -> { 'location' } [ "(.*) just punched a one-way ticket!" ] = "Teras Isle / Ruined Temple" ;
-		$this -> { 'location' } [ "(.*) is going home on his shield!" ] = "Ta'Vaalor" ;
-		$this -> { 'location' } [ "(.*) just took a long walk off a short pier!" ] = "Solhaven" ;
+		$this -> { 'location' } [ "(.*) is going home on (.*) shield!" ] = "Ta'Vaalor" ;
+		$this -> { 'location' } [ "(.*) just took a long walk off of a short pier!" ] = "Solhaven" ;
 		$this -> { 'location' } [ "(.*) is dust in the wind!" ] = "Four Winds Isle" ;
 		$this -> { 'location' } [ "(.*) is six hundred feet under!" ] = "Zul Logoth" ;
 		$this -> { 'location' } [ "(.*) may just be going home on his shield!" ] = "Aradhul Road / Displaced Red Forest" ;
@@ -29,6 +29,8 @@ class death
 		$this -> { 'location' } [ "(.*) is now fish food for the fauna of Caligos Isle!" ] = "Ebon Gate Festival - Caligos Isle" ;
 		$this -> { 'location' } [ "(.*) was just reunited with her ancestors!" ] = "Ebon Gate Festival - Feywrot Mire" ;
 		$this -> { 'location' } [ "(.*) failed to bring a shrubbery to the Night at the Academy!" ] = "Night at the Academy" ;
+
+		$this -> { 'location' } [ "(.*) has been vaporized!" ] = "Night at the Academy" ;
 
                 $dir_log = $dir [ 'character' ] . "/" . __CLASS__ ;
                 if ( ! ( file_exists ( $dir_log ) ) )
@@ -53,11 +55,12 @@ class death
 		{
 			sleep ( 1 ) ;
 		}
+		return ( TRUE ) ;
 	}
 
 	public function socket_read ( $gameArray , $buf )
 	{
-		if ( preg_match ( "/id=\"death\"/i" , $buf ) )
+		if ( preg_match ( "/<pushStream id=\"death\"/i" , $buf ) )
 		{
 			if ( $split1 = preg_split ( "/<a /i" , $buf ) )
 			{
@@ -83,34 +86,32 @@ class death
 					}
 				}
 			}
-			if ( isset ( $character_name ) )
+			if ( ! ( isset ( $character_name ) ) )
 			{
-				if ( isset ( $death_location ) )
-				{
-					print '[' . __CLASS__ . ']: ' . $character_name . ' has died near ' . $death_location . "\n" ;
-			                file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ": " . $death_location . "\n" , FILE_APPEND ) ;
-				}
-				else
-				{
-					print $buf ;
-			                file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ": UNKNOWN\n" , FILE_APPEND ) ;
-				}
+				$character_name = 'UNKNOWN' ;
 			}
-			else
+			if ( ! ( isset ( $death_location ) ) )
 			{
-				if ( isset ( $death_location ) )
-				{
-					print $buf ;
-					print '[' . __CLASS__ . ']: ' . 'UNKNOWN' . ' has died near ' . $death_location . "\n" ;
-			                file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . 'UNKNOWN' . ": " . $death_location . "\n" , FILE_APPEND ) ;
-				}
-				else
-				{
-					print $buf ;
-					print '[' . __CLASS__ . ']: ' . 'UNKNOWN' . ' has died near ' . 'UNKNOWN' . "\n" ;
-			                file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . 'UNKNOWN' . ": UNKNOWN\n" , FILE_APPEND ) ;
-				}
+				$death_location = 'UNKNOWN' ;
 			}
+			print $buf ;
+			print '[' . __CLASS__ . ']: ' . $character_name . ' has died near ' . $death_location . "\n" ;
+			file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ": " . $death_location . "\n" , FILE_APPEND ) ;
+
+			if ( is_callable ( array ( 'local_db' , 'connect' ) ) )
+			{
+				$log_array [ 'game_code' ] = $gameArray [ 'local' ] [ 'game_code' ] ;
+				$log_array [ 'character_name' ] = $character_name ;
+				$log_array [ 'location_name' ] = $death_location ;
+				$log_array [ 'original_text' ] = $buf ;
+				$log_array [ 'date_utc' ] = date ( "Y-m-d H:i:s" ) ;
+				$local_db = new local_db ( ) ;
+				$local_db -> connect ( ) ;
+				$local_db -> insert ( __CLASS__ , $log_array ) ;
+				$local_db -> close ( ) ;
+				unset ( $local_db ) ;
+			}
+
 		}
 		$return [ 'gameArray' ] = $gameArray ;
 		$return [ 'buf' ] = $buf ;

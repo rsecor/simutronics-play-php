@@ -6,6 +6,7 @@ class death
 	public function __construct ( $socket , $dir )
 	{
 		// INFO - https://gswiki.play.net/Death%27s_Sting#Death_Messaging
+		$this -> { 'location' } [ "(.*) is going home from the Elemental Confluence on (.*) shield!" ] = "Elemental Confluence / Ta'Vaalor" ;
 		$this -> { 'location' } [ "(.*) just got squashed!" ] = "Cysaegir" ;	
 		$this -> { 'location' } [ "(.*) has gone to feed the fishes!" ] = "River's Rest / Citadel" ;
 		$this -> { 'location' } [ "(.*) just bit the dust!" ] = "Wehnimer's Landing" ;
@@ -29,6 +30,7 @@ class death
 		$this -> { 'location' } [ "(.*) is now fish food for the fauna of Caligos Isle!" ] = "Ebon Gate Festival - Caligos Isle" ;
 		$this -> { 'location' } [ "(.*) was just reunited with (.*) ancestors!" ] = "Ebon Gate Festival - Feywrot Mire" ;
 		$this -> { 'location' } [ "(.*) failed to bring a shrubbery to the Night at the Academy!" ] = "Night at the Academy" ;
+
 
 		$this -> { 'location' } [ "(.*) has been vaporized!" ] = "Night at the Academy" ;
 

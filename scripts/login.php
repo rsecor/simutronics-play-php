@@ -73,12 +73,13 @@ class login
 			{
 				$character_status = '' ;
 			}
-			print '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_action . ": " . $character_name ;
+
+			$buf = '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_action . ": " . $character_name ;
 			if ( $character_status == 'NEW' )
 			{
-				print " (NEW)" ;
+				$buf .= " (NEW)" ;
 			}
-			print "\n" ;
+			$buf .= "\n" ;
 			file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ": " . $character_action . ": " . $character_status . "\n" , FILE_APPEND ) ;
 
 			if ( is_callable ( array ( 'local_db' , 'connect' ) ) )
@@ -98,7 +99,6 @@ class login
 		}
 		$return [ 'gameArray' ] = $gameArray ;
 		$return [ 'buf' ] = $buf ;
-		$return [ 'buf_show' ] = FALSE ;
 		return ( $return ) ;
 	}
 

@@ -117,7 +117,7 @@ class death
 			{
 				$death_location = 'UNKNOWN' ;
 			}
-			print '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_name . ' has died near ' . $death_location . "\n" ;
+			$buf = '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_name . ' has died near ' . $death_location . "\n" ;
 			file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ": " . $death_location . "\n" , FILE_APPEND ) ;
 
 			if ( is_callable ( array ( 'local_db' , 'connect' ) ) )
@@ -138,7 +138,6 @@ class death
 		}
 		$return [ 'gameArray' ] = $gameArray ;
 		$return [ 'buf' ] = $buf ;
-		$return [ 'buf_show' ] = FALSE ;
 		return ( $return ) ;
 	}
 

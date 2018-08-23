@@ -73,7 +73,7 @@ class login
 			{
 				$character_status = '' ;
 			}
-			print '[' . __CLASS__ . ']: ' . $character_action . ": " . $character_name ;
+			print '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_action . ": " . $character_name ;
 			if ( $character_status == 'NEW' )
 			{
 				print " (NEW)" ;

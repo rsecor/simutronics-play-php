@@ -553,9 +553,18 @@ while ( TRUE )
 					if ( is_callable ( array ( $class , 'socket_read' ) ) )
 					{
 						$class_return = $class_list [ $class ] -> socket_read ( $gameArray , $buf ) ;
-						$gameArray = $class_return [ 'gameArray' ] ;
-						$buf_show = FALSE ;
-						$buf = $class_return [ 'buf' ] ;
+						if ( isset ( $class_return [ 'gameArray' ] ) )
+						{
+							$gameArray = $class_return [ 'gameArray' ] ;
+						}
+						if ( isset ( $class_return [ 'buf_show' ] ) )
+						{
+							$buf_show = $class_return [ 'buf_show' ] ;
+						}
+						if ( isset ( $class_return [ 'buf' ] ) )
+						{
+							$buf = $class_return [ 'buf' ] ;
+						}
 					}
 				}
 			}

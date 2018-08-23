@@ -543,6 +543,7 @@ while ( TRUE )
 	}
 	if ( $buf = socket_read ( $socket , 65536 , PHP_BINARY_READ ) )
 	{
+		$buf_show = TRUE ;
 		if ( isset ( $class_list ) )
 		{
 			foreach ( $class_list as $class => $class_info )
@@ -553,6 +554,7 @@ while ( TRUE )
 					{
 						$class_return = $class_list [ $class ] -> socket_read ( $gameArray , $buf ) ;
 						$gameArray = $class_return [ 'gameArray' ] ;
+						$buf_show = FALSE ;
 						$buf = $class_return [ 'buf' ] ;
 					}
 				}
@@ -578,7 +580,10 @@ while ( TRUE )
 				$done_init = TRUE ;
 			}
 		}
-		print $buf ;
+		if ( $buf_show ) )
+		{
+			print $buf ;
+		}
 		if ( $background != 1 )
 		{
 			print "] " ;

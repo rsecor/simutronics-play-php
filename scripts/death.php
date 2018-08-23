@@ -138,6 +138,7 @@ class death
 		}
 		$return [ 'gameArray' ] = $gameArray ;
 		$return [ 'buf' ] = $buf ;
+		$return [ 'buf_show' ] = FALSE ;
 		return ( $return ) ;
 	}
 

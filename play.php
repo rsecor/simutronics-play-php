@@ -580,7 +580,7 @@ while ( TRUE )
 				$done_init = TRUE ;
 			}
 		}
-		if ( $buf_show ) )
+		if ( $buf_show )
 		{
 			print $buf ;
 		}

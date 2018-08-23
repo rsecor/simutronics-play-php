@@ -123,6 +123,7 @@ class death
 
 			if ( is_callable ( array ( 'local_db' , 'connect' ) ) )
 			{
+				$log_array [ 'source' ] = __CLASS__ ;
 				$log_array [ 'game_code' ] = $gameArray [ 'local' ] [ 'game_code' ] ;
 				$log_array [ 'character_name' ] = $character_name ;
 				$log_array [ 'location_name' ] = $death_location ;

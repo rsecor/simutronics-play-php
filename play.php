@@ -584,9 +584,9 @@ while ( TRUE )
 				$done_init = TRUE ;
 			}
 		}
-		print $buf ;
 		if ( $background != 1 )
 		{
+			print $buf ;
 			print "] " ;
 		}
 	}

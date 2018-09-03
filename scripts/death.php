@@ -99,10 +99,12 @@ class death
 		$this -> { 'location' } [ "(.*) was just scared to death!" ] = "Elanthia / Halloween" ;
 		$this -> { 'location' } [ "(.*), table for two\?  Er... never mind, make that table for one." ] = "Elanthia / Halloween" ;
 
+		// Other - Custom
+		$this -> { 'location' } [ "(.*) has just returned to Gosaena!" ] = "Unknown / Custom" ;
+
 		// Other
 		$this -> { 'location' } [ "(.*) has been incinerated!" ] = "Unknown" ;
 		$this -> { 'location' } [ "(.*) has been vaporized!" ] = "Unknown" ;
-		$this -> { 'location' } [ "(.*) has just returned to Gosaena!" ] = "Unknown" ;
 		$this -> { 'location' } [ "(.*) was just incinerated." ] = "Unknown" ;
 
 		$dir_log = $dir [ 'character' ] . "/" . __CLASS__ ;

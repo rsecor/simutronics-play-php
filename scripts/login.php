@@ -23,6 +23,7 @@ class login
 	public function init ( $socket )
 	{
 		$input = "flag LogOn on\n" ;
+		$input = "flag LogOff on\n" ;
 		print '[' . __CLASS__ . ']: ' . $input ;
 		if ( socket_write ( $this -> { 'socket' } , $input , strlen ( $input ) ) )
 		{
@@ -50,7 +51,7 @@ class login
 			}
 			if ( ! ( isset ( $character_name ) ) )
 			{
-				$character_name = 'UNKNOWN' ;
+				$character_name = $buf ;
 			}
 			$character_action = 'login' ;
 			$character_status = '' ;

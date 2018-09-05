@@ -88,6 +88,7 @@ class login
 				$log_array [ 'source' ] = __CLASS__ ;
 				$log_array [ 'game_code' ] = $gameArray [ 'local' ] [ 'game_code' ] ;
 				$log_array [ 'character_name' ] = $character_name ;
+				$log_array [ 'action' ] = $character_action ;
 				$log_array [ 'original_text' ] = $buf ;
 				$log_array [ 'date_utc' ] = date ( "Y-m-d H:i:s" ) ;
 				$local_db = new local_db ( ) ;

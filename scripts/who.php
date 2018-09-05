@@ -26,7 +26,7 @@ class who
 
 	public function init ( $socket )
 	{
-		$this -> { 'time' } = ( time ( ) - $this -> { 'seconds' } + 60 ) ;
+		$this -> { 'time' } = ( time ( ) - ( $this -> { 'seconds' } * 2 ) ) ;
 		return ( TRUE ) ;
 	}
 

@@ -100,8 +100,7 @@ class who
 										unset ( $local_db ) ;
 									}
 
-									print '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_name . "\n" ;
-
+									file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": ONLINE: " . $character_name . "\n" , FILE_APPEND ) ;
 								}
 							}
 						}

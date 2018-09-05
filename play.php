@@ -589,8 +589,11 @@ while ( TRUE )
 		}
 		if ( $background != 1 )
 		{
-			print $buf ;
-			print "] " ;
+			if ( ! ( empty ( $buf ) ) )
+			{
+				print $buf ;
+				print "] " ;
+			}
 		}
 	}
 }

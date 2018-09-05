@@ -4,7 +4,7 @@
 /*
    Started By: Richard A Secor <rsecor@rsecor.com>
    Started On: (around) 2018-07-01
-   Current Version: 0.0.966
+   Current Version: 0.1.01
 
    Description: This script is to enable a basic connection to various text-based games from Simutronics.
 

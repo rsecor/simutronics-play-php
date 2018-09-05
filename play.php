@@ -398,16 +398,19 @@ $done_init = FALSE ;
 
 while ( TRUE )
 {
-	if ( isset ( $class_list ) )
+	if ( $done_init )
 	{
-		foreach ( $class_list as $class => $class_info )
+		if ( isset ( $class_list ) )
 		{
-			if ( class_exists ( $class ) )
+			foreach ( $class_list as $class => $class_info )
 			{
-				if ( is_callable ( array ( $class , 'tick' ) ) )
+				if ( class_exists ( $class ) )
 				{
-					$class_return = $class_list [ $class ] -> tick ( $gameArray ) ;
-					$gameArray = $class_return [ 'gameArray' ] ;
+					if ( is_callable ( array ( $class , 'tick' ) ) )
+					{
+						$class_return = $class_list [ $class ] -> tick ( $gameArray ) ;
+						$gameArray = $class_return [ 'gameArray' ] ;
+					}
 				}
 			}
 		}

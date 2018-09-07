@@ -34,9 +34,8 @@ class who
 	{
 		if ( ( time ( ) - $this -> { 'time' } ) >= $this -> { 'seconds' } )
 		{
-			$input = "WHO FULL" ;
-			print "[" . __CLASS__ . "] " . $input . "\n" ;
-			$input .= "\n" ;
+			$input = "WHO FULL\n" ;
+			print "[" . __CLASS__ . "] " . $input ;
 			if ( socket_write ( $this -> { 'socket' } , $input , strlen ( $input ) ) )
 			{
 			}

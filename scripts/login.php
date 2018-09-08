@@ -22,8 +22,13 @@ class login
 
 	public function init ( $socket )
 	{
-		$input = "flag LogOn on\n" ;
-		$input = "flag LogOff on\n" ;
+		$input = "<c>flag LogOn on\n" ;
+		print '[' . __CLASS__ . ']: ' . $input ;
+		if ( socket_write ( $this -> { 'socket' } , $input , strlen ( $input ) ) )
+		{
+			sleep ( 1 ) ;
+		}
+		$input = "<c>flag LogOff on\n" ;
 		print '[' . __CLASS__ . ']: ' . $input ;
 		if ( socket_write ( $this -> { 'socket' } , $input , strlen ( $input ) ) )
 		{
@@ -34,9 +39,10 @@ class login
 
 	public function socket_read ( $gameArray , $buf )
 	{
+		$output = $buf ;
 		if ( preg_match ( "/<pushStream id=\"logons\"/i" , $buf ) )
 		{
-			if ( $split1 = preg_split ( "/<a /i" , $buf ) )
+			if ( $split1 = preg_split ( "/<a /i" , $local_buf ) )
 			{
 				if ( isset ( $split1 [ 1 ] ) )
 				{
@@ -75,12 +81,12 @@ class login
 				$character_status = '' ;
 			}
 
-			$buf = '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_action . ": " . $character_name ;
+			$output = '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_action . ": " . $character_name ;
 			if ( $character_status == 'NEW' )
 			{
-				$buf .= " (NEW)" ;
+				$output .= " (NEW)" ;
 			}
-			$buf .= "\n" ;
+			$output .= "\n" ;
 			file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ": " . $character_action . ": " . $character_status . "\n" , FILE_APPEND ) ;
 
 			if ( is_callable ( array ( 'local_db' , 'connect' ) ) )
@@ -100,6 +106,7 @@ class login
 
 		}
 		$return [ 'gameArray' ] = $gameArray ;
+		$return [ 'output' ] = $output ;
 		$return [ 'buf' ] = $buf ;
 		return ( $return ) ;
 	}

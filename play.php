@@ -4,7 +4,7 @@
 /*
    Started By: Richard A Secor <rsecor@rsecor.com>
    Started On: (around) 2018-07-01
-   Current Version: 0.1.01
+   Current Version: 0.1.21
 
    Description: This script is to enable a basic connection to various text-based games from Simutronics.
 
@@ -409,7 +409,16 @@ while ( TRUE )
 					if ( is_callable ( array ( $class , 'tick' ) ) )
 					{
 						$class_return = $class_list [ $class ] -> tick ( $gameArray ) ;
-						$gameArray = $class_return [ 'gameArray' ] ;
+						if ( isset ( $class_return [ 'gameArray' ] ) )
+						{
+							$gameArray = $class_return [ 'gameArray' ] ;
+						}
+						if ( isset ( $class_return [ 'output' ] ) )
+						{
+							$output = $class_return [ 'output' ] ;
+							print $output ;
+							$output = '' ;
+						}
 					}
 				}
 			}
@@ -540,12 +549,12 @@ while ( TRUE )
 						break ;
 					default :
 				}
-				print "] " ;
 			}
 		}
 	}
 	if ( $buf = socket_read ( $socket , 65536 , PHP_BINARY_READ ) )
 	{
+		$output = $buf ;
 		if ( isset ( $class_list ) )
 		{
 			foreach ( $class_list as $class => $class_info )
@@ -559,14 +568,19 @@ while ( TRUE )
 						{
 							$gameArray = $class_return [ 'gameArray' ] ;
 						}
-						if ( isset ( $class_return [ 'buf' ] ) )
+						if ( isset ( $class_return [ 'output' ] ) )
 						{
-							$buf = $class_return [ 'buf' ] ;
+							if ( ! ( empty ( $class_return [ 'output' ] ) ) )
+							{
+								// print __LINE__ . ": " .  $class . ": " . $output . "\n" ;
+								$output = $class_return [ 'output' ] ;
+							}
 						}
 					}
 				}
 			}
 		}
+
 		if ( ! ( $done_init ) )
 		{
 			if ( preg_match ( "/Important Information/i" , $buf ) )
@@ -587,13 +601,22 @@ while ( TRUE )
 				$done_init = TRUE ;
 			}
 		}
+
 		if ( $background != 1 )
 		{
-			if ( ! ( empty ( $buf ) ) )
+			if ( ! ( empty ( $output ) ) )
 			{
-				print $buf ;
-				print "] " ;
+				// print "OUTPUT: " . $output ;
+				print $output ;
+				unset ( $output ) ;
 			}
+			elseif ( ! ( empty ( $buf ) ) )
+			{
+				// print "BUF: " . $buf ;
+				print $buf ;
+			}
+			$output = '' ;
+			$buf = '' ;
 		}
 	}
 }

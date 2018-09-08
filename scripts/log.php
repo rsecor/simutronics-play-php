@@ -7,13 +7,11 @@ class log
 	{
 		$this -> { 'socket' } = $socket ;
 		$dir_log = $dir [ 'character' ] . "/" . __CLASS__ ;
-		print __CLASS__ . ": dir_log: " . $dir_log . "\n" ;
 		if ( ! ( file_exists ( $dir_log ) ) )
 		{
 			mkdir ( $dir_log , 0750 , TRUE ) ;
 		}
 		$this -> { 'log' } = $dir_log . "/" . date ( "Ymd-His" ) . ".log" ;
-		print __CLASS__ . ": this -> log: " . $this -> { 'log' } . "\n" ;
 		file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": LOG STARTED\n" ) ;
 		return ( TRUE ) ;
 	}
@@ -28,6 +26,7 @@ class log
 	{
 		file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $buf , FILE_APPEND ) ;
 		$return [ 'gameArray' ] = $gameArray ;
+		$return [ 'output' ] = $buf ;
 		$return [ 'buf' ] = $buf ;
 		return ( $return ) ;
 	}

@@ -17,6 +17,7 @@ class parse_xml
 	{
 		$gameArray = $this -> xml2game ( $gameArray , $buf ) ;
                 $return [ 'gameArray' ] = $gameArray ;
+                $return [ 'output' ] = $buf ;
                 $return [ 'buf' ] = $buf ;
 		return ( $return ) ;
 	}

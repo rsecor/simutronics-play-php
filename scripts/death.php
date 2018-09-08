@@ -135,10 +135,11 @@ class death
 
 	public function socket_read ( $gameArray , $buf )
 	{
-		$buf = preg_replace ( "/is off to a rough start!  (She|He) /i" , "" , $buf ) ;
-		if ( preg_match ( "/<pushStream id=\"death\"/i" , $buf ) )
+		$output = $buf ;
+		$local_buf = preg_replace ( "/is off to a rough start!  (She|He) /i" , "" , $buf ) ;
+		if ( preg_match ( "/<pushStream id=\"death\"/i" , $local_buf ) )
 		{
-			if ( $split1 = preg_split ( "/<a /i" , $buf ) )
+			if ( $split1 = preg_split ( "/<a /i" , $local_buf ) )
 			{
 				if ( isset ( $split1 [ 1 ] ) )
 				{
@@ -153,7 +154,7 @@ class death
 			}
 			foreach ( $this -> { 'location' } as $death_message => $location )
 			{
-				if ( preg_match_all ( "/" . $death_message . "/i" , $buf , $matches ) )
+				if ( preg_match_all ( "/" . $death_message . "/i" , $local_buf , $matches ) )
 				{
 					if ( isset ( $matches [ 1 ] ) )
 					{
@@ -170,8 +171,8 @@ class death
 			{
 				$death_location = 'UNKNOWN' ;
 			}
-			$buf = '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_name . ' has died near ' . $death_location . "\n" ;
-			file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ": " . $death_location . "\n" , FILE_APPEND ) ;
+			$output = '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_name . ' has died near ' . $death_location . "\n" ;
+			file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $gameArray [ 'local' ] [ 'game_code' ] . ": " . $character_name . ": " . $death_location . ": " . $buf . "\n" , FILE_APPEND ) ;
 
 			if ( is_callable ( array ( 'local_db' , 'connect' ) ) )
 			{
@@ -190,6 +191,7 @@ class death
 
 		}
 		$return [ 'gameArray' ] = $gameArray ;
+		$return [ 'output' ] = $output ;
 		$return [ 'buf' ] = $buf ;
 		return ( $return ) ;
 	}

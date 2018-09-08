@@ -5,8 +5,9 @@ class who
 
 	public function __construct ( $socket , $dir )
 	{
-		$minutes = 15 ;
-		$seconds = 60 * $minutes ;
+		// $minutes = 5 ;
+		// $seconds = 60 * $minutes ;
+		$seconds = 15 ;
 		$dir_log = $dir [ 'character' ] . "/" . __CLASS__ ;
 		$this -> { 'seconds' } = $seconds ;
 		$this -> { 'who_full' } = FALSE ;
@@ -34,38 +35,52 @@ class who
 	{
 		if ( ( time ( ) - $this -> { 'time' } ) >= $this -> { 'seconds' } )
 		{
-			$input = "WHO FULL\n" ;
-			print "[" . __CLASS__ . "] " . $input ;
+			$input = "<c>WHO FULL\n" ;
+			$output = "[" . __CLASS__ . "] " . $input ;
 			if ( socket_write ( $this -> { 'socket' } , $input , strlen ( $input ) ) )
 			{
 			}
 			$this -> { 'time' } = time ( ) ;
 		}
 		$return [ 'gameArray' ] = $gameArray ;
+		if ( isset ( $output ) )
+		{
+			$return [ 'output' ] = $output ;
+		}
+		if ( isset ( $buf ) )
+		{
+			$return [ 'buf' ] = $buf ;
+		}
 		return ( $return ) ;
 	}
 
 	public function socket_read ( $gameArray , $buf )
 	{
+		$output = '' ;
+		$local_buf = $buf ;
 		if ( preg_match ( "/Due to the amount of data this command generates, it is necessary to (.*)who full confirm(.*)confirm(.*) it./i" , $buf ) )
 		{
-			$input = "WHO FULL CONFIRM" ;
-			$buf = "[" . __CLASS__ . "] " . $input . "\n" ;
-			$input .= "\n" ;
+			$input = "<c>WHO FULL CONFIRM\n" ;
+			$output = "[" . __CLASS__ . "] " . $input ;
 			if ( socket_write ( $this -> { 'socket' } , $input , strlen ( $input ) ) )
 			{
 			}
 			$this -> { 'time' } = time ( ) ;
+			$this -> { 'who_full' } = '' ;
+			$return [ 'gameArray' ] = $gameArray ;
+			$return [ 'output' ] = $output ;
+			$return [ 'buf' ] = $buf ;
+			return ( $return ) ;
 		}
 		elseif ( preg_match ( "/Brave Adventurers Questing:/i" , $buf ) )
 		{
-			$this -> { 'who_full' } = $buf ;
-			$buf = '' ;
+			$this -> { 'who_full' } .= $buf ;
+			$local_buf = '' ;
 		}
 		elseif ( ! ( empty ( $this -> { 'who_full' } ) ) )
 		{
 			$this -> { 'who_full' } .= $buf ;
-			$buf = '' ;
+			$local_buf = '' ;
 		}
 
 		if ( preg_match ( "/Active Players: /i" , $this -> { 'who_full' } ) )
@@ -110,7 +125,7 @@ class who
 					if ( isset ( $split1 [ 1 ] ) )
 					{
 						$active_players = $split1 [ 1 ] ;
-						$buf = '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ONLINE: ' . $active_players . "\n" ;
+						$output = '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ONLINE: ' . $active_players . "\n" ;
 
 						file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": ONLINE: " . $active_players . "\n" , FILE_APPEND ) ;
 
@@ -132,8 +147,14 @@ class who
 					}
 				}
 			}
+			$this -> { 'who_full' } = '' ;
+		}
+		else
+		{
+			$output = '' ;
 		}
 		$return [ 'gameArray' ] = $gameArray ;
+		$return [ 'output' ] = $output ;
 		$return [ 'buf' ] = $buf ;
 		return ( $return ) ;
 	}

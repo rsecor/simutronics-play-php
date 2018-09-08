@@ -20,15 +20,17 @@ class keepalive
 
 	public function socket_read ( $gameArray , $buf )
 	{
+		$output = $buf ;
 		if ( preg_match ( "/YOU HAVE BEEN IDLE TOO LONG. PLEASE RESPOND./i" , $buf ) )
 		{
 			$input = $this -> { 'VERBS' } [ array_rand ( $this -> { 'VERBS' } , 1 ) ] . "\n" ;
-			print "[" . __CLASS__ . "] " . $input ;
+			$output .= "[" . __CLASS__ . "] " . $input ;
 			if ( socket_write ( $this -> { 'socket' } , $input , strlen ( $input ) ) )
 			{
 			}
 		}
 		$return [ 'gameArray' ] = $gameArray ;
+		$return [ 'output' ] = $output ;
 		$return [ 'buf' ] = $buf ;
 		return ( $return ) ;
 	}

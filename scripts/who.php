@@ -5,9 +5,8 @@ class who
 
 	public function __construct ( $socket , $dir )
 	{
-		// $minutes = 5 ;
-		// $seconds = 60 * $minutes ;
-		$seconds = 15 ;
+		$minutes = 15 ;
+		$seconds = 60 * $minutes ;
 		$dir_log = $dir [ 'character' ] . "/" . __CLASS__ ;
 		$this -> { 'seconds' } = $seconds ;
 		$this -> { 'who_full' } = FALSE ;

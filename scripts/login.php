@@ -39,6 +39,7 @@ class login
 
 	public function socket_read ( $gameArray , $buf )
 	{
+		$local_buf = $buf ;
 		$output = $buf ;
 		if ( preg_match ( "/<pushStream id=\"logons\"/i" , $buf ) )
 		{

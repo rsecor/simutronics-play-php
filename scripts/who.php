@@ -111,6 +111,7 @@ class who
 										$local_db -> insert ( __CLASS__ , $log_array ) ;
 										$local_db -> close ( ) ;
 										unset ( $local_db ) ;
+										unset ( $log_array ) ;
 									}
 
 									file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": ONLINE: " . $character_name . "\n" , FILE_APPEND ) ;
@@ -140,6 +141,7 @@ class who
 							$local_db -> insert ( __CLASS__ , $log_array ) ;
 							$local_db -> close ( ) ;
 							unset ( $local_db ) ;
+							unset ( $log_array ) ;
 						}
 
 						break ;

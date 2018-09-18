@@ -546,7 +546,6 @@ while ( TRUE )
 				{
 					case 'EXIT' :
 						break 2 ;
-						break ;
 					default :
 				}
 			}
@@ -554,6 +553,16 @@ while ( TRUE )
 	}
 	if ( $buf = socket_read ( $socket , 65536 , PHP_BINARY_READ ) )
 	{
+		if ( preg_match ( "/Invalid login key.  Please relogin to the web site./i" , $buf ) )
+		{
+			print date ( "Y-m-d H:i:s" ) . ": Game Host Down\n" ;
+			break ;
+		}
+		if ( preg_match ( "/\<\!-- CLIENT --\>.*\<\!-- ENDCLIENT --\>/i" , $buf ) )
+		{
+			print date ( "Y-m-d H:i:s" ) . ": Game Host Down\n" ;
+			break ;
+		}
 		$output = $buf ;
 		if ( isset ( $class_list ) )
 		{

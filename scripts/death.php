@@ -143,10 +143,10 @@ class death
 			{
 				foreach ( $split1 as $split1_no => $split1_val )
 				{
+					unset ( $character_name ) ;
+					unset ( $location_name ) ;
 					if ( preg_match_all ( '/ noun="(.*)">(.*)<\/a>/i' , $split1_val , $matches ) )
 					{
-						unset ( $character_name ) ;
-						unset ( $location_name ) ;
 						if ( preg_match ( "/^" . $matches [ 1 ] [ 0 ] . "/i",  $matches [ 2 ] [ 0 ] ) )
 						{
 							$character_name = $matches [ 1 ] [ 0 ] ;

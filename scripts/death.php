@@ -143,15 +143,15 @@ class death
 			{
 				foreach ( $split1 as $split1_no => $split1_val )
 				{
+					if ( preg_match ( "/ is off to a rough start!/" , $split1_val , $matches ) )
+					{
+						continue ;
+					}
 					unset ( $character_name ) ;
 					unset ( $location_name ) ;
 					if ( preg_match_all ( '/ noun="(.*)">(.*)<\/a>/i' , $split1_val , $matches ) )
 					{
-						if ( preg_match ( "/^" . $matches [ 1 ] [ 0 ] . "/i",  $matches [ 2 ] [ 0 ] ) )
-						{
-							$character_name = $matches [ 1 ] [ 0 ] ;
-						}
-
+						$character_name = $matches [ 1 ] [ 0 ] ;
 						foreach ( $this -> { 'location' } as $death_message => $location )
 						{
 							if ( preg_match_all ( "/" . $death_message . "/i" , $split1_val , $matches ) )
@@ -171,7 +171,6 @@ class death
 						{
 							$death_location = 'UNKNOWN' ;
 						}
-
 						$output = '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_name . ' has died near ' . $death_location . "\n" ;
 						file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $gameArray [ 'local' ] [ 'game_code' ] . ": " . $character_name . ": " . $death_location . ": " . $buf . "\n" , FILE_APPEND ) ;
 

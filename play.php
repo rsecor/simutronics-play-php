@@ -524,7 +524,7 @@ while ( TRUE )
 			else
 			{
 				print "COMMAND: '" . $input_stream [ 0 ] . "'\n"  ;
-				$input = "<c>" . $input_stream [ 0 ] . "\r\n" ;
+				$input_user = "<c>" . $input_stream [ 0 ] . "\r\n" ;
 				if ( isset ( $class_list ) )
 				{
 					foreach ( $class_list as $class => $class_info )
@@ -533,14 +533,14 @@ while ( TRUE )
 						{
 							if ( is_callable ( array ( $class , 'socket_write' ) ) )
 							{
-								$class_return = $class_list [ $class ] -> socket_write ( $input ) ;
+								$class_return = $class_list [ $class ] -> socket_write ( $input_user ) ;
 							}
 						}
 					}
 				}
-				if ( socket_write ( $socket , $input , strlen ( $input ) ) )
+				if ( socket_write ( $socket , $input_user , strlen ( $input_user ) ) )
 				{
-					$input_history [ ] = $input ;
+					$input_history [ ] = $input_user ;
 				}
 				switch ( strtoupper ( $input_stream [ 0 ] ) )
 				{

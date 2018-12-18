@@ -74,7 +74,7 @@ $lock_dir = "/home/jahadeem/src/simutronics-play-php/" ;
 if ( ( isset ( $username ) ) && ( isset ( $password ) ) && ( isset ( $game_code ) ) && ( isset ( $character_code ) ) )
 {
 	$lock_file = $lock_dir . $username . ".lock" ;
-	if ( isset ( $lock_file ) )
+	if ( file_exists ( $lock_file ) )
 	{
 		exit ;
 	}
@@ -254,7 +254,7 @@ else
 	if ( ( isset ( $username ) ) && ( isset ( $password ) ) && ( isset ( $game_code ) ) && ( isset ( $character_code ) ) )
 	{
 		$lock_file = $lock_dir . $username . ".lock" ;
-		if ( isset ( $lock_file ) )
+		if ( file_exists ( $lock_file ) )
 		{
 			exit ;
 		}
@@ -423,11 +423,11 @@ $gameArray [ 'local' ] [ 'game_code' ] = $game_code ;
 
 $done_init = FALSE ;
 
-$time_lapse = 0 ;
+$time_start = time ( ) ;
 
 while ( TRUE )
 {
-	if ( $time_lapse >= $time_out )
+	if ( ( time ( ) - $time_start ) >= $time_out )
 	{
 		break 1 ;
 	}
@@ -457,7 +457,6 @@ while ( TRUE )
 			}
 		}
 	}
-	$time_lapse ++ ;
 	if ( $background == 1 )
 	{
 	}
@@ -587,7 +586,7 @@ while ( TRUE )
 	}
 	if ( $buf = socket_read ( $socket , 65536 , PHP_BINARY_READ ) )
 	{
-		$time_lapse = 0 ;
+		$time_start = time ( ) ;
 		if ( preg_match ( "/Invalid login key.  Please relogin to the web site./i" , $buf ) )
 		{
 			print date ( "Y-m-d H:i:s" ) . ": Game Host Down\n" ;

@@ -27,6 +27,8 @@ if ( PHP_SAPI != "cli" )
 
 parse_str ( implode ( '&' , array_slice ( $argv , 1 ) ) , $input ) ;
 
+$time_out = 30 ;
+
 $background = 0 ;
 if ( isset ( $input [ 'background' ] ) )
 {
@@ -65,6 +67,16 @@ if ( isset ( $input [ 'character_code' ] ) )
 	if ( ! ( empty ( $input [ 'character_code' ] ) ) )
 	{
 		$character_code = $input [ 'character_code' ] ;
+	}
+}
+
+$lock_dir = "/home/jahadeem/src/simutronics-play-php/" ;
+if ( ( isset ( $username ) ) && ( isset ( $password ) ) && ( isset ( $game_code ) ) && ( isset ( $character_code ) ) )
+{
+	$lock_file = $lock_dir . $username . ".lock" ;
+	if ( isset ( $lock_file ) )
+	{
+		exit ;
 	}
 }
 
@@ -239,6 +251,15 @@ else
 			$character_name = $character_list [ $character_no ] [ 'name' ] ;
 		}
 	}
+	if ( ( isset ( $username ) ) && ( isset ( $password ) ) && ( isset ( $game_code ) ) && ( isset ( $character_code ) ) )
+	{
+		$lock_file = $lock_dir . $username . ".lock" ;
+		if ( isset ( $lock_file ) )
+		{
+			exit ;
+		}
+	}
+	touch ( $lock_file ) ;
 	print "Entering " . $game_name . " as " . $character_name . "\n" ;
 	$dir [ 'character' ] = $dir [ 'base' ] . "/" . $game_name . "/" . $character_name ;
 	if ( ! ( file_exists ( $dir [ 'character' ] ) ) )
@@ -256,6 +277,7 @@ else
 			{
 				print "Subscription Failure...\n" ;
 				fclose ( $fp ) ;
+				unlink ( $lock_file ) ;
 				exit ;
 			}
 		}	
@@ -264,6 +286,7 @@ else
 	{
 		print "Login Failure...\n" ;
 		fclose ( $fp ) ;
+		unlink ( $lock_file ) ;
 		exit ;
 	}
 	$sal_file = '' ;
@@ -309,12 +332,14 @@ else
 if ( ! ( isset ( $game [ 'host' ] ) ) )
 {
 	print __FILE__ . ": " . __LINE__ . ": Missing game host\n" ;
+	unlink ( $lock_file ) ;
 	exit ;
 }
 
 if ( ! ( isset ( $game [ 'port' ] ) ) )
 {
 	print __FILE__ . ": " . __LINE__ . ": Missing game port\n" ;
+	unlink ( $lock_file ) ;
 	exit ;
 }
 
@@ -323,6 +348,7 @@ $socket = socket_create ( AF_INET , SOCK_STREAM , SOL_TCP ) ;
 if ( $socket === FALSE )
 {
 	print "socket_create failure\n" ;
+	unlink ( $lock_file ) ;
 	exit ;
 }
 
@@ -332,6 +358,7 @@ $result = socket_connect ( $socket , $game [ 'host' ] , $game [ 'port' ] ) ;
 if ( $result === FALSE )
 {
 	print "socket_connect failure\n" ;
+	unlink ( $lock_file ) ;
 	exit ;
 }
 
@@ -396,8 +423,14 @@ $gameArray [ 'local' ] [ 'game_code' ] = $game_code ;
 
 $done_init = FALSE ;
 
+$time_lapse = 0 ;
+
 while ( TRUE )
 {
+	if ( $time_lapse >= $time_out )
+	{
+		break 1 ;
+	}
 	if ( $done_init )
 	{
 		if ( isset ( $class_list ) )
@@ -424,6 +457,7 @@ while ( TRUE )
 			}
 		}
 	}
+	$time_lapse ++ ;
 	if ( $background == 1 )
 	{
 	}
@@ -553,6 +587,7 @@ while ( TRUE )
 	}
 	if ( $buf = socket_read ( $socket , 65536 , PHP_BINARY_READ ) )
 	{
+		$time_lapse = 0 ;
 		if ( preg_match ( "/Invalid login key.  Please relogin to the web site./i" , $buf ) )
 		{
 			print date ( "Y-m-d H:i:s" ) . ": Game Host Down\n" ;
@@ -632,6 +667,7 @@ while ( TRUE )
 
 socket_close ( $socket ) ;
 
+unlink ( $lock_file ) ;
 exit ;
 
 function play_error_handler ( $error_no , $error_string , $error_file , $error_line )

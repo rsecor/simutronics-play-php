@@ -27,7 +27,7 @@ if ( PHP_SAPI != "cli" )
 
 parse_str ( implode ( '&' , array_slice ( $argv , 1 ) ) , $input ) ;
 
-$time_out = 30 ;
+$time_out = 90 ;
 
 $background = 0 ;
 if ( isset ( $input [ 'background' ] ) )

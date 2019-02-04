@@ -4,7 +4,7 @@
 /*
    Started By: Richard A Secor <rsecor@rsecor.com>
    Started On: (around) 2018-07-01
-   Current Version: 0.1.21
+   Current Version: 0.1.23
 
    Description: This script is to enable a basic connection to various text-based games from Simutronics.
 
@@ -15,6 +15,8 @@ date_default_timezone_set ( 'UTC' ) ;
 
 set_error_handler ( 'play_error_handler' ) ;
 set_exception_handler ( 'play_exception_handler' ) ;
+
+$version = '0.1.23' ;
 
 $dir [ 'base' ] = __DIR__ ;
 $dir [ 'scripts' ] = $dir [ 'base' ] . "/scripts" ;
@@ -70,10 +72,18 @@ if ( isset ( $input [ 'character_code' ] ) )
 	}
 }
 
-$lock_dir = "/home/jahadeem/src/simutronics-play-php/" ;
+$type = 'XML' ;
+if ( isset ( $input [ 'type' ] ) )
+{
+	if ( ! ( empty ( $input [ 'type' ] ) ) )
+	{
+		$type = $input [ 'type' ] ;
+	}
+}
+
+$lock_file = $dir [ 'base' ] . "/" . $username . ".lock" ;
 if ( ( isset ( $username ) ) && ( isset ( $password ) ) && ( isset ( $game_code ) ) && ( isset ( $character_code ) ) )
 {
-	$lock_file = $lock_dir . $username . ".lock" ;
 	if ( file_exists ( $lock_file ) )
 	{
 		exit ;
@@ -253,7 +263,6 @@ else
 	}
 	if ( ( isset ( $username ) ) && ( isset ( $password ) ) && ( isset ( $game_code ) ) && ( isset ( $character_code ) ) )
 	{
-		$lock_file = $lock_dir . $username . ".lock" ;
 		if ( file_exists ( $lock_file ) )
 		{
 			exit ;
@@ -275,6 +284,7 @@ else
 		{
 			if ( $launch [ 1 ] == 'PROBLEM' )
 			{
+				print print_r ( $launch , TRUE ) ;
 				print "Subscription Failure...\n" ;
 				fclose ( $fp ) ;
 				unlink ( $lock_file ) ;
@@ -405,7 +415,11 @@ $buf = socket_read ( $socket , 2048 ) ;
 print "================================================================================\n" ;
 print $buf . "\n" ;
 
-$client_announce = "/FE:WIZARD /VERSION:1.0.1.22 /P:i386-mingw32 /XML\n" ;
+$client_announce = "/FE:JAHADEEM /VERSION:" . $version . "\n" ;
+if ( $type == 'XML' )
+{
+	$client_announce = "/FE:WIZARD /VERSION:1.0.1.22 /P:i386-mingw32 /XML\n" ;
+}
 socket_write ( $socket , $client_announce , strlen ( $client_announce ) ) ;
 $buf = socket_read ( $socket , 2048 ) ;
 print "================================================================================\n" ;

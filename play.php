@@ -325,7 +325,7 @@ else
 		$sal_file .= $launch [ $line_no ] . "\n" ;
 	}
 	// print $sal_file ;
-	// file_put_contents ( "./" . $game_code . "." . $char_code . ".sal" , $sal_file ) ;
+	// file_put_contents ( "./" . $game_code . "." . $character_code . ".sal" , $sal_file ) ;
 	fclose ( $fp ) ;
 }
 

@@ -41,55 +41,112 @@ class login
 	{
 		$local_buf = $buf ;
 		$output = $buf ;
-		if ( preg_match ( "/<pushStream id=\"logons\"/i" , $buf ) )
+
+		$type = $gameArray [ 'local' ] [ 'type' ] ;
+
+		$found = FALSE ;
+
+		if ( $type == 'XML' )
 		{
-			if ( $split1 = preg_split ( "/<a /i" , $local_buf ) )
+			if ( preg_match ( "/<pushStream id=\"logons\"/i" , $buf ) )
 			{
-				if ( isset ( $split1 [ 1 ] ) )
+				if ( $split1 = preg_split ( "/<a /i" , $local_buf ) )
 				{
-					if ( preg_match_all ( '/ noun="(.*)">(.*)<\/a>/i' , $split1 [ 1 ] , $matches ) )
+					if ( isset ( $split1 [ 1 ] ) )
 					{
-						if ( preg_match ( "/^" . $matches [ 1 ] [ 0 ] . "/i",  $matches [ 2 ] [ 0 ] ) )
+						if ( preg_match_all ( '/ noun="(.*)">(.*)<\/a>/i' , $split1 [ 1 ] , $matches ) )
 						{
-							$character_name = $matches [ 1 ] [ 0 ] ;
-						}
-					}	
+							if ( preg_match ( "/^" . $matches [ 1 ] [ 0 ] . "/i",  $matches [ 2 ] [ 0 ] ) )
+							{
+								$character_name = $matches [ 1 ] [ 0 ] ;
+							}
+						}	
+					}
 				}
+				if ( ! ( isset ( $character_name ) ) )
+				{
+					$character_name = $buf ;
+				}
+				$character_action = 'login' ;
+				$character_status = '' ;
+				if ( preg_match ( "/has arrived and the adventure can truly begin!/i" , $buf ) )
+				{
+					$character_action = 'login' ;
+					$character_status = 'NEW' ;
+				}
+				elseif ( preg_match ( "/joins the adventure./i" , $buf ) )
+				{
+					$character_action = 'login' ;
+					$character_status = 'OLD' ;
+				}
+				elseif ( preg_match ( "/returns home from a hard day of adventuring./" , $buf ) )
+				{
+					$character_action = 'logout' ;
+					$character_status = '' ;
+				}
+				else
+				{
+					$character_status = '' ;
+				}
+
+				$output = '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_action . ": " . $character_name ;
+				if ( $character_status == 'NEW' )
+				{
+					$output .= " (NEW)" ;
+				}
+				$output .= "\n" ;
+				file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ": " . $character_action . ": " . $character_status . "\n" , FILE_APPEND ) ;
+				$found = TRUE ;
 			}
-			if ( ! ( isset ( $character_name ) ) )
+		}
+
+		elseif ( preg_match_all ( "/\ \*(.*)\ has arrived and the adventure can truly begin\!/i" , $buf , $matches ) )
+		{
+			if ( isset ( $matches [ 1 ] [ 0 ] ) )
 			{
-				$character_name = $buf ;
-			}
-			$character_action = 'login' ;
-			$character_status = '' ;
-			if ( preg_match ( "/has arrived and the adventure can truly begin!/i" , $buf ) )
-			{
+				$character_name = $matches [ 1 ] [ 0 ] ;
 				$character_action = 'login' ;
 				$character_status = 'NEW' ;
+				file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ": " . $character_action . ": " . $character_status . "\n" , FILE_APPEND ) ;
+				$output = '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_action . ": " . $character_name . " (NEW)\n" ;
 			}
-			elseif ( preg_match ( "/joins the adventure./i" , $buf ) )
+		}
+		elseif ( preg_match_all ( "/\ \*(.*)\ joins\ the\ adventure\./i" , $buf , $matches ) )
+		{
+			if ( isset ( $matches [ 1 ] [ 0 ] ) )
 			{
+				$character_name = $matches [ 1 ] [ 0 ] ;
 				$character_action = 'login' ;
-				$character_status = 'OLD' ;
+				$character_status = '' ;
+				file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ": " . $character_action . ": " . $character_status . "\n" , FILE_APPEND ) ;
+				$output = '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_action . ": " . $character_name . "\n" ;
 			}
-			elseif ( preg_match ( "/returns home from a hard day of adventuring./" , $buf ) )
+		}
+		elseif ( preg_match_all ( "/\ \*(.*)\ returns home from a hard day of adventuring\./i" , $buf , $matches ) )
+		{
+			if ( isset ( $matches [ 1 ] [ 0 ] ) )
 			{
+				$character_name = $matches [ 1 ] [ 0 ] ;
 				$character_action = 'logout' ;
 				$character_status = '' ;
+				file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ": " . $character_action . ": " . $character_status . "\n" , FILE_APPEND ) ;
+				$output = '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_action . ": " . $character_name . "\n" ;
 			}
-			else
+		}
+		elseif ( preg_match_all ( "/\ \*(.*)\ has disconnected\./i" , $buf , $matches ) )
+		{
+			if ( isset ( $matches [ 1 ] [ 0 ] ) )
 			{
+				$character_name = $matches [ 1 ] [ 0 ] ;
+				$character_action = 'logout' ;
 				$character_status = '' ;
+				file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ": " . $character_action . ": " . $character_status . "\n" , FILE_APPEND ) ;
+				$output = '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_action . ": " . $character_name . "\n" ;
 			}
+		}
 
-			$output = '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_action . ": " . $character_name ;
-			if ( $character_status == 'NEW' )
-			{
-				$output .= " (NEW)" ;
-			}
-			$output .= "\n" ;
-			file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ": " . $character_action . ": " . $character_status . "\n" , FILE_APPEND ) ;
-
+		if ( $found )
+		{
 			if ( is_callable ( array ( 'local_db' , 'connect' ) ) )
 			{
 				$log_array [ 'source' ] = __CLASS__ ;
@@ -104,8 +161,8 @@ class login
 				$local_db -> close ( ) ;
 				unset ( $local_db ) ;
 			}
-
 		}
+
 		$return [ 'gameArray' ] = $gameArray ;
 		$return [ 'output' ] = $output ;
 		$return [ 'buf' ] = $buf ;

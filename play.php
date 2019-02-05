@@ -31,12 +31,12 @@ parse_str ( implode ( '&' , array_slice ( $argv , 1 ) ) , $input ) ;
 
 $time_out = 90 ;
 
-$background = 0 ;
+$background = FALSE ;
 if ( isset ( $input [ 'background' ] ) )
 {
 	if ( ! ( empty ( $input [ 'background' ] ) ) )
 	{
-		$background = $input [ 'background' ] ;
+		$background = TRUE ;
 	}
 }
 
@@ -472,7 +472,7 @@ while ( TRUE )
 			}
 		}
 	}
-	if ( $background == 1 )
+	if ( $background )
 	{
 	}
 	else
@@ -630,8 +630,12 @@ while ( TRUE )
 						{
 							if ( ! ( empty ( $class_return [ 'output' ] ) ) )
 							{
-								// print __LINE__ . ": " .  $class . ": " . $output . "\n" ;
+								if ( ! ( isset ( $output ) ) )
+								{
+									$output = '' ;
+								}
 								$output = $class_return [ 'output' ] ;
+								// print __LINE__ . ": " .  $class . ": " . $output . "\n" ;
 							}
 						}
 					}
@@ -660,20 +664,17 @@ while ( TRUE )
 			}
 		}
 
-		if ( $background != 1 )
+		if ( ! ( $background ) )
 		{
 			if ( ! ( empty ( $output ) ) )
 			{
-				// print "OUTPUT: " . $output ;
 				print $output ;
 				unset ( $output ) ;
 			}
 			elseif ( ! ( empty ( $buf ) ) )
 			{
-				// print "BUF: " . $buf ;
 				print $buf ;
 			}
-			$output = '' ;
 			$buf = '' ;
 		}
 	}

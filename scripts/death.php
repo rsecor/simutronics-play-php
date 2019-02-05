@@ -45,7 +45,7 @@ class death
 		$this -> { 'location' } [ "just got squashed!" ] = "Cysaegir" ;	
 		$this -> { 'location' } [ "just got trampled in the Talondown Arena!" ] = "Talondown Arena" ;
 		$this -> { 'location' } [ "just gave up the ghost!" ] = "Castle Varunar / Trail to Solhaven / Trail to Icemule" ;
-		$this -> { 'location' } [ "way somewhere in the Settlement of Reim!" ] = "Reim" ;
+		$this -> { 'location' } [ "just lost .+h(er|is).+ way somewhere in the Settlement of Reim!" ] = "Reim" ;
 		$this -> { 'location' } [ "just perished defending a fortress within Reim!" ] = "Reim Fortress Defense" ;
 		$this -> { 'location' } [ "just perished underneath Bloodriven Village!" ] = "Duskruin Arena Sewers" ;
 		$this -> { 'location' } [ "just perished within the Reim Base Camp!" ] = "Reim Base Camp" ;

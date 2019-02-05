@@ -4,7 +4,7 @@
 /*
    Started By: Richard A Secor <rsecor@rsecor.com>
    Started On: (around) 2018-07-01
-   Current Version: 0.1.23
+   Current Version: 0.2.26
 
    Description: This script is to enable a basic connection to various text-based games from Simutronics.
 
@@ -16,7 +16,7 @@ date_default_timezone_set ( 'UTC' ) ;
 set_error_handler ( 'play_error_handler' ) ;
 set_exception_handler ( 'play_exception_handler' ) ;
 
-$version = '0.1.23' ;
+$version = '0.2.26' ;
 
 $dir [ 'base' ] = __DIR__ ;
 $dir [ 'scripts' ] = $dir [ 'base' ] . "/scripts" ;

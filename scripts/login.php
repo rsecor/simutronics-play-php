@@ -40,7 +40,6 @@ class login
 	public function socket_read ( $gameArray , $buf )
 	{
 		$local_buf = $buf ;
-		$output = $buf ;
 
 		$type = $gameArray [ 'local' ] [ 'type' ] ;
 
@@ -98,6 +97,7 @@ class login
 				file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ": " . $character_action . ": " . $character_status . "\n" , FILE_APPEND ) ;
 				$found = TRUE ;
 			}
+
 		}
 
 		elseif ( preg_match_all ( "/\ \*(.*)\ has arrived and the adventure can truly begin\!/i" , $buf , $matches ) )
@@ -145,6 +145,14 @@ class login
 			}
 		}
 
+		if ( preg_match_all ( "/(\*)/" , $buf , $matches ) )
+		{
+			if ( count ( $matches ) > 2 )
+			{
+				print "Check for multiple login/logout/death: " . $buf . "\n" ;
+			}
+		}
+
 		if ( $found )
 		{
 			if ( is_callable ( array ( 'local_db' , 'connect' ) ) )
@@ -164,7 +172,10 @@ class login
 		}
 
 		$return [ 'gameArray' ] = $gameArray ;
-		$return [ 'output' ] = $output ;
+		if ( isset ( $output ) )
+		{
+			$return [ 'output' ] = $output ;
+		}
 		$return [ 'buf' ] = $buf ;
 		return ( $return ) ;
 	}

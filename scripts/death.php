@@ -10,10 +10,10 @@ class death
 		// Elmental Confluence
 		$this -> { 'location' } [ "(.*) has gone to feed the fishes in the Elemental Confluence!" ] = "Elemental Confluence / River's Rest / Citadel" ;
 		$this -> { 'location' } [ "(.*) is dust in the winds of the Elemental Confluence!" ] = "Elemental Confluence / Four Winds Isle" ;
-		$this -> { 'location' } [ "(.*) is going home from the Elemental Confluence on .+h(er|is).+ shield!" ] = "Elemental Confluence / Ta'Vaalor" ;
+		$this -> { 'location' } [ "(.*) is going home from the Elemental Confluence on h(er|is) shield!" ] = "Elemental Confluence / Ta'Vaalor" ;
 		$this -> { 'location' } [ "(.*) is six hundred feet under the Elemental Confluence!" ] = "Elemental Confluence / Zul Logoth" ;
 		$this -> { 'location' } [ "(.*) just bit the dust in the Elemental Confluence!" ] = "Elemental Confluence / Wehnimer's Landing" ;
-		$this -> { 'location' } [ "(.*) just turned .+h(er|is).+ last page in the Elemental Confluence!" ] = "Elemental Confluence / Ta'Illistim / OTF" ;
+		$this -> { 'location' } [ "(.*) just turned h(er|is) last page in the Elemental Confluence!" ] = "Elemental Confluence / Ta'Illistim / OTF" ;
 		$this -> { 'location' } [ "(.*) just punched a one-way ticket to the Elemental Confluence!" ] = "Elemental Confluence / Teras Isle / Ruined Temple" ;
 		$this -> { 'location' } [ "(.*) just took a long walk off of a short pier in the Elemental Confluence!" ] = "Elemental Confluence / Solhaven" ;
 		$this -> { 'location' } [ "(.*) was just put on ice in the Elemental Confluence!" ] = "Elemental Confluence / Icemule Trace" ;
@@ -22,14 +22,14 @@ class death
 		// Towns
 		$this -> { 'location' } [ "(.*) has gone to feed the fishes!" ] = "River's Rest / Citadel" ;
 		$this -> { 'location' } [ "(.*) is dust in the wind!" ] = "Four Winds Isle" ;
-		$this -> { 'location' } [ "(.*) is going home on .+h(er|is).+ shield!" ] = "Ta'Vaalor" ;
+		$this -> { 'location' } [ "(.*) is going home on h(er|is) shield!" ] = "Ta'Vaalor" ;
 		$this -> { 'location' } [ "(.*) is six hundred feet under!" ] = "Zul Logoth" ;
 		$this -> { 'location' } [ "(.*) just bit the dust!" ] = "Wehnimer's Landing" ;
 		$this -> { 'location' } [ "(.*) just punched a one-way ticket!" ] = "Teras Isle / Ruined Temple" ;
 		$this -> { 'location' } [ "(.*) just took a long walk off a short pier!" ] = "Solhaven" ;
 		$this -> { 'location' } [ "(.*) just took a long walk off of a short pier!" ] = "Solhaven" ;
-		$this -> { 'location' } [ "(.*) just turned .+h(er|is).+ last page!" ] = "Ta'Illistim / OTF" ;
-		$this -> { 'location' } [ "(.*) just turned .+h(er|is).+ last page!" ] = "Ta'Illistim / OTF" ;
+		$this -> { 'location' } [ "(.*) just turned h(er|is) last page!" ] = "Ta'Illistim / OTF" ;
+		$this -> { 'location' } [ "(.*) just turned h(er|is) last page!" ] = "Ta'Illistim / OTF" ;
 		$this -> { 'location' } [ "(.*) was just put on ice!" ] = "Icemule Trace" ;
 
 		// Quests / Events
@@ -46,12 +46,12 @@ class death
 		$this -> { 'location' } [ "(.*) just got squashed!" ] = "Cysaegir" ;	
 		$this -> { 'location' } [ "(.*) just got trampled in the Talondown Arena!" ] = "Talondown Arena" ;
 		$this -> { 'location' } [ "(.*) just gave up the ghost!" ] = "Castle Varunar / Trail to Solhaven / Trail to Icemule" ;
-		$this -> { 'location' } [ "(.*) just lost .+h(er|is).+ way somewhere in the Settlement of Reim!" ] = "Reim" ;
+		$this -> { 'location' } [ "(.*) just lost h(er|is) way somewhere in the Settlement of Reim!" ] = "Reim" ;
 		$this -> { 'location' } [ "(.*) just perished defending a fortress within Reim!" ] = "Reim Fortress Defense" ;
 		$this -> { 'location' } [ "(.*) just perished underneath Bloodriven Village!" ] = "Duskruin Arena Sewers" ;
 		$this -> { 'location' } [ "(.*) just perished within the Reim Base Camp!" ] = "Reim Base Camp" ;
-		$this -> { 'location' } [ "(.*) may just be going home on .+h(er|is).+ shield!" ] = "Aradhul Road / Displaced Red Forest" ;
-		$this -> { 'location' } [ "(.*) was just reunited with .+h(er|is).+ ancestors!" ] = "Ebon Gate Festival - Feywrot Mire" ;
+		$this -> { 'location' } [ "(.*) may just be going home on h(er|is) shield!" ] = "Aradhul Road / Displaced Red Forest" ;
+		$this -> { 'location' } [ "(.*) was just reunited with h(er|is) ancestors!" ] = "Ebon Gate Festival - Feywrot Mire" ;
 
 		// Holiday - April Fool's
 		$this -> { 'location' } [ "Alas, poor (.*).  I knew h(er|im), Horatio." ] = "Elanthia / April Fool's" ;
@@ -73,7 +73,7 @@ class death
 		$this -> { 'location' } [ "(.*) just croaked!" ] = "Elanthia / April Fool's" ;
 		$this -> { 'location' } [ "(.*) just died.  Typical." ] = "Elanthia / April Fool's" ;
 		$this -> { 'location' } [ "(.*) just kicked the bucket!" ] = "Elanthia / April Fool's" ;
-		$this -> { 'location' } [ "(.*) just met .+h(er|is).+ maker!" ] = "Elanthia / April Fool's" ;
+		$this -> { 'location' } [ "(.*) just met h(er|is) maker!" ] = "Elanthia / April Fool's" ;
 		$this -> { 'location' } [ "(.*) sleeps with the fishes!" ] = "Elanthia / April Fool's" ;
 
 		// Holiday - Halloween
@@ -86,20 +86,20 @@ class death
 		$this -> { 'location' } [ "While trying to fly like a bat, (.*) meets the ground.  Messy." ] = "Elanthia / Halloween" ;
 		$this -> { 'location' } [ "Will someone tell (.*) to stop pretending to be a ghost?" ] = "Elanthia / Halloween" ;
 		$this -> { 'location' } [ "(.*) became dead.  Guess the trick went bad." ] = "Elanthia / Halloween" ;
-		$this -> { 'location' } [ "(.*) death cry sounds like .+(s|)he.+ stepped on a cat." ] = "Elanthia / Halloween" ;
+		$this -> { 'location' } [ "(.*) death cry sounds like (s|)he stepped on a cat." ] = "Elanthia / Halloween" ;
 		$this -> { 'location' } [ "(.*) does the zombie-shuffle." ] = "Elanthia / Halloween" ;
 		$this -> { 'location' } [ "(.*) gets into the spirit of things.  Literally." ] = "Elanthia / Halloween" ;
 		$this -> { 'location' } [ "(.*) gorged on too much candy and exploded." ] = "Elanthia / Halloween" ;
 		$this -> { 'location' } [ "(.*) just became one of the recently deceased." ] = "Elanthia / Halloween" ;
-		$this -> { 'location' } [ "(.*) just bit the dust.  Would someone give .+h(er|im).+ some treats?" ] = "Elanthia / Halloween" ;
-		$this -> { 'location' } [ "(.*) just crawled into .+h(er|is).+ grave.  Weirdo." ] = "Elanthia / Halloween" ;
+		$this -> { 'location' } [ "(.*) just bit the dust.  Would someone give h(er|im) some treats?" ] = "Elanthia / Halloween" ;
+		$this -> { 'location' } [ "(.*) just crawled into h(er|is) grave.  Weirdo." ] = "Elanthia / Halloween" ;
 		$this -> { 'location' } [ "(.*) just crawled out of a grave.  Get the shovel!" ] = "Elanthia / Halloween" ;
 		$this -> { 'location' } [ "(.*) just drowned while bobbing for apples." ] = "Elanthia / Halloween" ;
-		$this -> { 'location' } [ "(.*) just found .+h(er|im)self.+ a six-foot deep hole." ] = "Elanthia / Halloween" ;
+		$this -> { 'location' } [ "(.*) just found h(er|im)self a six-foot deep hole." ] = "Elanthia / Halloween" ;
 		$this -> { 'location' } [ "(.*) just tried turning into a pumpkin.  Must be midnight." ] = "Elanthia / Halloween" ;
 		$this -> { 'location' } [ "(.*) lets out a scream that would make a banshee whine.  Earplugs, anyone?" ] = "Elanthia / Halloween" ;
-		$this -> { 'location' } [ "(.*) looks like .+(s|)he.+ just crawled out of a grave.  Get the shovel!" ] = "Elanthia / Halloween" ;
-		$this -> { 'location' } [ "(.*) looks like .+(s|)he.+ saw a ghost!  Never mind, .+(s|)he.+ is a ghost!" ] = "Elanthia / Halloween" ;
+		$this -> { 'location' } [ "(.*) looks like (s|)he just crawled out of a grave.  Get the shovel!" ] = "Elanthia / Halloween" ;
+		$this -> { 'location' } [ "(.*) looks like (s|)he saw a ghost!  Never mind, (s|)he is a ghost!" ] = "Elanthia / Halloween" ;
 		$this -> { 'location' } [ "(.*) makes an appointment for the Ebon Gate." ] = "Elanthia / Halloween" ;
 		$this -> { 'location' } [ "(.*) takes the costume contest just a lil' too far." ] = "Elanthia / Halloween" ;
 		$this -> { 'location' } [ "(.*) tripped over a pumpkin and found a squash." ] = "Elanthia / Halloween" ;

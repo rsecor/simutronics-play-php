@@ -433,6 +433,7 @@ socket_write ( $socket , $wait , strlen ( $wait ) ) ;
 socket_set_nonblock ( $socket ) ;
 stream_set_blocking ( STDIN , 0 ) ;
 
+$gameArray [ 'local' ] [ 'type' ] = $type ;
 $gameArray [ 'local' ] [ 'game_code' ] = $game_code ;
 
 $done_init = FALSE ;

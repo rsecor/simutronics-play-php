@@ -108,6 +108,7 @@ if ( $fp = stream_socket_client ( $play , $errno , $errstr , 30 ) )
 			{
 				print "You have chosen to stop this script.\n" ;
 				fclose ( $fp ) ;
+				unlink ( $lock_file ) ;
 				exit ;
 			}
 		}
@@ -119,6 +120,7 @@ if ( $fp = stream_socket_client ( $play , $errno , $errstr , 30 ) )
 				print chr ( 27 ) . chr ( 91 ) . 'H' . chr ( 27 ) . chr ( 91 ) . 'J' ;
 				print "You have chosen to stop this script.\n" ;
 				fclose ( $fp ) ;
+				unlink ( $lock_file ) ;
 				exit ;
 			}
 			// Clear screen -- where available on platform
@@ -139,6 +141,7 @@ if ( $fp = stream_socket_client ( $play , $errno , $errstr , 30 ) )
 			{
 				print "ERROR #" . __LINE__ . ": Bad Password\n" ;
 				fclose ( $fp ) ;
+				unlink ( $lock_file ) ;
 				exit ;
 			}
 		}
@@ -146,6 +149,7 @@ if ( $fp = stream_socket_client ( $play , $errno , $errstr , 30 ) )
 		{
 			print "ERROR #" . __LINE__ . ": Bad Password\n" ;
 			fclose ( $fp ) ;
+			unlink ( $lock_file ) ;
 			exit ;
 		}
 	}
@@ -154,6 +158,7 @@ else
 {
 	print __FILE__ . ": " . __LINE__ . ": errno: " . $errno . "\n" ;
 	print __FILE__ . ": " . __LINE__ . ": errstr: " . $errstr . "\n" ;
+	unlink ( $lock_file ) ;
 	exit ;
 }
 
@@ -183,6 +188,7 @@ else
 	if ( ! ( isset ( $game_list ) ) )
 	{
 		print "No games found.\n" ;
+		unlink ( $lock_file ) ;
 		exit ;
 	}
 	foreach ( $game_list as $game_no => $game_info )
@@ -195,6 +201,7 @@ else
 		if ( ! ( $game_no = trim ( readline ( "Enter Game #: " ) ) ) )
 		{
 			print "You have chosen to stop this script.\n" ;
+			unlink ( $lock_file ) ;
 			exit ;
 		}
 		if ( isset ( $game_list [ $game_no ] ) )
@@ -233,6 +240,7 @@ else
 	if ( ! ( isset ( $character_list ) ) )
 	{
 		print "No characters found for " . $game_name . "\n" ;
+		unlink ( $lock_file ) ;
 		exit ;
 	}
 	foreach ( $character_list as $character_no => $character_info )
@@ -244,6 +252,7 @@ else
 		if ( ! ( $charactere_no = trim ( readline ( "Enter Character #: " ) ) ) )
 		{
 			print "You have chosen to stop this script.\n" ;
+			unlink ( $lock_file ) ;
 			exit ;
 		}
 		if ( isset ( $character_list [ $character_no ] ) )

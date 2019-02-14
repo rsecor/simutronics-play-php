@@ -4,7 +4,7 @@
 /*
    Started By: Richard A Secor <rsecor@rsecor.com>
    Started On: (around) 2018-07-01
-   Current Version: 0.1.21
+   Current Version: 0.2.26
 
    Description: This script is to enable a basic connection to various text-based games from Simutronics.
 
@@ -15,6 +15,8 @@ date_default_timezone_set ( 'UTC' ) ;
 
 set_error_handler ( 'play_error_handler' ) ;
 set_exception_handler ( 'play_exception_handler' ) ;
+
+$version = '0.2.26' ;
 
 $dir [ 'base' ] = __DIR__ ;
 $dir [ 'scripts' ] = $dir [ 'base' ] . "/scripts" ;
@@ -27,12 +29,14 @@ if ( PHP_SAPI != "cli" )
 
 parse_str ( implode ( '&' , array_slice ( $argv , 1 ) ) , $input ) ;
 
-$background = 0 ;
+$time_out = 90 ;
+
+$background = FALSE ;
 if ( isset ( $input [ 'background' ] ) )
 {
 	if ( ! ( empty ( $input [ 'background' ] ) ) )
 	{
-		$background = $input [ 'background' ] ;
+		$background = TRUE ;
 	}
 }
 
@@ -65,6 +69,24 @@ if ( isset ( $input [ 'character_code' ] ) )
 	if ( ! ( empty ( $input [ 'character_code' ] ) ) )
 	{
 		$character_code = $input [ 'character_code' ] ;
+	}
+}
+
+$type = 'XML' ;
+if ( isset ( $input [ 'type' ] ) )
+{
+	if ( ! ( empty ( $input [ 'type' ] ) ) )
+	{
+		$type = $input [ 'type' ] ;
+	}
+}
+
+$lock_file = $dir [ 'base' ] . "/" . $username . ".lock" ;
+if ( ( isset ( $username ) ) && ( isset ( $password ) ) && ( isset ( $game_code ) ) && ( isset ( $character_code ) ) )
+{
+	if ( file_exists ( $lock_file ) )
+	{
+		exit ;
 	}
 }
 
@@ -239,6 +261,14 @@ else
 			$character_name = $character_list [ $character_no ] [ 'name' ] ;
 		}
 	}
+	if ( ( isset ( $username ) ) && ( isset ( $password ) ) && ( isset ( $game_code ) ) && ( isset ( $character_code ) ) )
+	{
+		if ( file_exists ( $lock_file ) )
+		{
+			exit ;
+		}
+	}
+	touch ( $lock_file ) ;
 	print "Entering " . $game_name . " as " . $character_name . "\n" ;
 	$dir [ 'character' ] = $dir [ 'base' ] . "/" . $game_name . "/" . $character_name ;
 	if ( ! ( file_exists ( $dir [ 'character' ] ) ) )
@@ -254,8 +284,10 @@ else
 		{
 			if ( $launch [ 1 ] == 'PROBLEM' )
 			{
+				print print_r ( $launch , TRUE ) ;
 				print "Subscription Failure...\n" ;
 				fclose ( $fp ) ;
+				unlink ( $lock_file ) ;
 				exit ;
 			}
 		}	
@@ -264,6 +296,7 @@ else
 	{
 		print "Login Failure...\n" ;
 		fclose ( $fp ) ;
+		unlink ( $lock_file ) ;
 		exit ;
 	}
 	$sal_file = '' ;
@@ -302,19 +335,21 @@ else
 		$sal_file .= $launch [ $line_no ] . "\n" ;
 	}
 	// print $sal_file ;
-	// file_put_contents ( "./" . $game_code . "." . $char_code . ".sal" , $sal_file ) ;
+	// file_put_contents ( "./" . $game_code . "." . $character_code . ".sal" , $sal_file ) ;
 	fclose ( $fp ) ;
 }
 
 if ( ! ( isset ( $game [ 'host' ] ) ) )
 {
 	print __FILE__ . ": " . __LINE__ . ": Missing game host\n" ;
+	unlink ( $lock_file ) ;
 	exit ;
 }
 
 if ( ! ( isset ( $game [ 'port' ] ) ) )
 {
 	print __FILE__ . ": " . __LINE__ . ": Missing game port\n" ;
+	unlink ( $lock_file ) ;
 	exit ;
 }
 
@@ -323,6 +358,7 @@ $socket = socket_create ( AF_INET , SOCK_STREAM , SOL_TCP ) ;
 if ( $socket === FALSE )
 {
 	print "socket_create failure\n" ;
+	unlink ( $lock_file ) ;
 	exit ;
 }
 
@@ -332,6 +368,7 @@ $result = socket_connect ( $socket , $game [ 'host' ] , $game [ 'port' ] ) ;
 if ( $result === FALSE )
 {
 	print "socket_connect failure\n" ;
+	unlink ( $lock_file ) ;
 	exit ;
 }
 
@@ -378,7 +415,11 @@ $buf = socket_read ( $socket , 2048 ) ;
 print "================================================================================\n" ;
 print $buf . "\n" ;
 
-$client_announce = "/FE:WIZARD /VERSION:1.0.1.22 /P:i386-mingw32 /XML\n" ;
+$client_announce = "/FE:JAHADEEM /VERSION:" . $version . "\n" ;
+if ( $type == 'XML' )
+{
+	$client_announce = "/FE:WIZARD /VERSION:1.0.1.22 /P:i386-mingw32 /XML\n" ;
+}
 socket_write ( $socket , $client_announce , strlen ( $client_announce ) ) ;
 $buf = socket_read ( $socket , 2048 ) ;
 print "================================================================================\n" ;
@@ -392,12 +433,19 @@ socket_write ( $socket , $wait , strlen ( $wait ) ) ;
 socket_set_nonblock ( $socket ) ;
 stream_set_blocking ( STDIN , 0 ) ;
 
+$gameArray [ 'local' ] [ 'type' ] = $type ;
 $gameArray [ 'local' ] [ 'game_code' ] = $game_code ;
 
 $done_init = FALSE ;
 
+$time_start = time ( ) ;
+
 while ( TRUE )
 {
+	if ( ( time ( ) - $time_start ) >= $time_out )
+	{
+		break 1 ;
+	}
 	if ( $done_init )
 	{
 		if ( isset ( $class_list ) )
@@ -424,7 +472,7 @@ while ( TRUE )
 			}
 		}
 	}
-	if ( $background == 1 )
+	if ( $background )
 	{
 	}
 	else
@@ -524,7 +572,7 @@ while ( TRUE )
 			else
 			{
 				print "COMMAND: '" . $input_stream [ 0 ] . "'\n"  ;
-				$input = "<c>" . $input_stream [ 0 ] . "\r\n" ;
+				$input_user = "<c>" . $input_stream [ 0 ] . "\r\n" ;
 				if ( isset ( $class_list ) )
 				{
 					foreach ( $class_list as $class => $class_info )
@@ -533,14 +581,14 @@ while ( TRUE )
 						{
 							if ( is_callable ( array ( $class , 'socket_write' ) ) )
 							{
-								$class_return = $class_list [ $class ] -> socket_write ( $input ) ;
+								$class_return = $class_list [ $class ] -> socket_write ( $input_user ) ;
 							}
 						}
 					}
 				}
-				if ( socket_write ( $socket , $input , strlen ( $input ) ) )
+				if ( socket_write ( $socket , $input_user , strlen ( $input_user ) ) )
 				{
-					$input_history [ ] = $input ;
+					$input_history [ ] = $input_user ;
 				}
 				switch ( strtoupper ( $input_stream [ 0 ] ) )
 				{
@@ -553,6 +601,7 @@ while ( TRUE )
 	}
 	if ( $buf = socket_read ( $socket , 65536 , PHP_BINARY_READ ) )
 	{
+		$time_start = time ( ) ;
 		if ( preg_match ( "/Invalid login key.  Please relogin to the web site./i" , $buf ) )
 		{
 			print date ( "Y-m-d H:i:s" ) . ": Game Host Down\n" ;
@@ -581,8 +630,12 @@ while ( TRUE )
 						{
 							if ( ! ( empty ( $class_return [ 'output' ] ) ) )
 							{
-								// print __LINE__ . ": " .  $class . ": " . $output . "\n" ;
+								if ( ! ( isset ( $output ) ) )
+								{
+									$output = '' ;
+								}
 								$output = $class_return [ 'output' ] ;
+								// print __LINE__ . ": " .  $class . ": " . $output . "\n" ;
 							}
 						}
 					}
@@ -611,20 +664,17 @@ while ( TRUE )
 			}
 		}
 
-		if ( $background != 1 )
+		if ( ! ( $background ) )
 		{
 			if ( ! ( empty ( $output ) ) )
 			{
-				// print "OUTPUT: " . $output ;
 				print $output ;
 				unset ( $output ) ;
 			}
 			elseif ( ! ( empty ( $buf ) ) )
 			{
-				// print "BUF: " . $buf ;
 				print $buf ;
 			}
-			$output = '' ;
 			$buf = '' ;
 		}
 	}
@@ -632,6 +682,7 @@ while ( TRUE )
 
 socket_close ( $socket ) ;
 
+unlink ( $lock_file ) ;
 exit ;
 
 function play_error_handler ( $error_no , $error_string , $error_file , $error_line )

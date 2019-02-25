@@ -1,4 +1,4 @@
-#!/usr/bin/env php
+#!/usr/local/bin/php
 <?php
 
 /*
@@ -8,6 +8,8 @@
 
    Description: This script is to enable a basic connection to various text-based games from Simutronics.
 
+   Known Issues: Cannot run under a jailed shell.
+
  */
 
 ini_set('memory_limit', '-1');
@@ -16,7 +18,9 @@ date_default_timezone_set ( 'UTC' ) ;
 set_error_handler ( 'play_error_handler' ) ;
 set_exception_handler ( 'play_exception_handler' ) ;
 
-$version = '0.2.26' ;
+cli_set_process_title ( "JAHADEEM PLAY RUN" ) ;
+
+$version = '0.3.27' ;
 
 $dir [ 'base' ] = __DIR__ ;
 $dir [ 'scripts' ] = $dir [ 'base' ] . "/scripts" ;
@@ -81,15 +85,6 @@ if ( isset ( $input [ 'type' ] ) )
 	}
 }
 
-$lock_file = $dir [ 'base' ] . "/" . $username . ".lock" ;
-if ( ( isset ( $username ) ) && ( isset ( $password ) ) && ( isset ( $game_code ) ) && ( isset ( $character_code ) ) )
-{
-	if ( file_exists ( $lock_file ) )
-	{
-		exit ;
-	}
-}
-
 // Clear screen -- where available on platform
 print chr ( 27 ) . chr ( 91 ) . 'H' . chr ( 27 ) . chr ( 91 ) . 'J' ;
 
@@ -108,7 +103,6 @@ if ( $fp = stream_socket_client ( $play , $errno , $errstr , 30 ) )
 			{
 				print "You have chosen to stop this script.\n" ;
 				fclose ( $fp ) ;
-				unlink ( $lock_file ) ;
 				exit ;
 			}
 		}
@@ -120,7 +114,6 @@ if ( $fp = stream_socket_client ( $play , $errno , $errstr , 30 ) )
 				print chr ( 27 ) . chr ( 91 ) . 'H' . chr ( 27 ) . chr ( 91 ) . 'J' ;
 				print "You have chosen to stop this script.\n" ;
 				fclose ( $fp ) ;
-				unlink ( $lock_file ) ;
 				exit ;
 			}
 			// Clear screen -- where available on platform
@@ -141,7 +134,6 @@ if ( $fp = stream_socket_client ( $play , $errno , $errstr , 30 ) )
 			{
 				print "ERROR #" . __LINE__ . ": Bad Password\n" ;
 				fclose ( $fp ) ;
-				unlink ( $lock_file ) ;
 				exit ;
 			}
 		}
@@ -149,7 +141,6 @@ if ( $fp = stream_socket_client ( $play , $errno , $errstr , 30 ) )
 		{
 			print "ERROR #" . __LINE__ . ": Bad Password\n" ;
 			fclose ( $fp ) ;
-			unlink ( $lock_file ) ;
 			exit ;
 		}
 	}
@@ -158,7 +149,6 @@ else
 {
 	print __FILE__ . ": " . __LINE__ . ": errno: " . $errno . "\n" ;
 	print __FILE__ . ": " . __LINE__ . ": errstr: " . $errstr . "\n" ;
-	unlink ( $lock_file ) ;
 	exit ;
 }
 
@@ -188,7 +178,6 @@ else
 	if ( ! ( isset ( $game_list ) ) )
 	{
 		print "No games found.\n" ;
-		unlink ( $lock_file ) ;
 		exit ;
 	}
 	foreach ( $game_list as $game_no => $game_info )
@@ -201,7 +190,6 @@ else
 		if ( ! ( $game_no = trim ( readline ( "Enter Game #: " ) ) ) )
 		{
 			print "You have chosen to stop this script.\n" ;
-			unlink ( $lock_file ) ;
 			exit ;
 		}
 		if ( isset ( $game_list [ $game_no ] ) )
@@ -240,7 +228,6 @@ else
 	if ( ! ( isset ( $character_list ) ) )
 	{
 		print "No characters found for " . $game_name . "\n" ;
-		unlink ( $lock_file ) ;
 		exit ;
 	}
 	foreach ( $character_list as $character_no => $character_info )
@@ -252,7 +239,6 @@ else
 		if ( ! ( $charactere_no = trim ( readline ( "Enter Character #: " ) ) ) )
 		{
 			print "You have chosen to stop this script.\n" ;
-			unlink ( $lock_file ) ;
 			exit ;
 		}
 		if ( isset ( $character_list [ $character_no ] ) )
@@ -270,15 +256,7 @@ else
 			$character_name = $character_list [ $character_no ] [ 'name' ] ;
 		}
 	}
-	if ( ( isset ( $username ) ) && ( isset ( $password ) ) && ( isset ( $game_code ) ) && ( isset ( $character_code ) ) )
-	{
-		if ( file_exists ( $lock_file ) )
-		{
-			exit ;
-		}
-	}
-	touch ( $lock_file ) ;
-	print "Entering " . $game_name . " as " . $character_name . "\n" ;
+	print date ( "Y-m-d H:i:s" ) . ": Entering " . $game_name . " as " . $character_name . "\n" ;
 	$dir [ 'character' ] = $dir [ 'base' ] . "/" . $game_name . "/" . $character_name ;
 	if ( ! ( file_exists ( $dir [ 'character' ] ) ) )
 	{
@@ -296,7 +274,6 @@ else
 				print print_r ( $launch , TRUE ) ;
 				print "Subscription Failure...\n" ;
 				fclose ( $fp ) ;
-				unlink ( $lock_file ) ;
 				exit ;
 			}
 		}	
@@ -305,7 +282,6 @@ else
 	{
 		print "Login Failure...\n" ;
 		fclose ( $fp ) ;
-		unlink ( $lock_file ) ;
 		exit ;
 	}
 	$sal_file = '' ;
@@ -351,14 +327,12 @@ else
 if ( ! ( isset ( $game [ 'host' ] ) ) )
 {
 	print __FILE__ . ": " . __LINE__ . ": Missing game host\n" ;
-	unlink ( $lock_file ) ;
 	exit ;
 }
 
 if ( ! ( isset ( $game [ 'port' ] ) ) )
 {
 	print __FILE__ . ": " . __LINE__ . ": Missing game port\n" ;
-	unlink ( $lock_file ) ;
 	exit ;
 }
 
@@ -367,7 +341,6 @@ $socket = socket_create ( AF_INET , SOCK_STREAM , SOL_TCP ) ;
 if ( $socket === FALSE )
 {
 	print "socket_create failure\n" ;
-	unlink ( $lock_file ) ;
 	exit ;
 }
 
@@ -377,7 +350,6 @@ $result = socket_connect ( $socket , $game [ 'host' ] , $game [ 'port' ] ) ;
 if ( $result === FALSE )
 {
 	print "socket_connect failure\n" ;
-	unlink ( $lock_file ) ;
 	exit ;
 }
 
@@ -691,7 +663,6 @@ while ( TRUE )
 
 socket_close ( $socket ) ;
 
-unlink ( $lock_file ) ;
 exit ;
 
 function play_error_handler ( $error_no , $error_string , $error_file , $error_line )

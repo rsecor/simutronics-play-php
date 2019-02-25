@@ -49,7 +49,7 @@ class death
 		$this -> { 'location' } [ "just perished defending a fortress within Reim!" ] = "Reim Fortress Defense" ;
 		$this -> { 'location' } [ "just perished underneath Bloodriven Village!" ] = "Duskruin Arena Sewers" ;
 		$this -> { 'location' } [ "just perished within the Reim Base Camp!" ] = "Reim Base Camp" ;
-		$this -> { 'location' } [ "shield!" ] = "Aradhul Road / Displaced Red Forest" ;
+		$this -> { 'location' } [ "may just be going home on .+h(er|is).+ shield!" ] = "Aradhul Road / Displaced Red Forest" ;
 		$this -> { 'location' } [ "ancestors!" ] = "Ebon Gate Festival - Feywrot Mire" ;
 
 		// Holiday - April Fool's
@@ -112,6 +112,7 @@ class death
 		$this -> { 'location' } [ "has been incinerated!" ] = "Unknown" ;
 		$this -> { 'location' } [ "has been vaporized!" ] = "Unknown" ;
 		$this -> { 'location' } [ "was just incinerated." ] = "Unknown" ;
+                $this -> { 'location' } [ "was just vaporized!" ] = "Unknown" ;
 
 		$dir_log = $dir [ 'character' ] . "/" . __CLASS__ ;
 		if ( ! ( file_exists ( $dir_log ) ) )
@@ -166,6 +167,11 @@ class death
 						if ( preg_match_all ( '/noun="(.*)">(.*)<\/a>.+' . $death_message . '/i' , $matches2_val , $matches3 ) )
 						{
 							$character_name = $matches3 [ 1 ] [ 0 ] ;
+							if ( preg_match_all ( '/^(.*)"\> is off to a rought start! /i' , $matches3 [ 1 ] [ 0 ] , $matches4 ) )
+							{
+								$character_name = $matches [ 1 ] [ 0 ] ;
+							}
+
 							$death_location = $location ;
 
 							print __LINE__ . ": " . $character_name . ": " . $death_location . "\n" ;

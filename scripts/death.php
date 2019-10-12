@@ -50,6 +50,7 @@ class death
 		$this -> { 'location' } [ '<a exist=".*" noun="(.*)">.*<\/a> just perished within the Reim Base Camp!' ] = "Reim Base Camp" ;
 		$this -> { 'location' } [ '<a exist=".*" noun="(.*)">.*<\/a> may just be going home on <a exist=".*" noun=".*">.*<\/a> shield!' ] = "Aradhul Road / Displaced Red Forest" ;
 		$this -> { 'location' } [ '<a exist=".*" noun="(.*)">.*<\/a> was just reunited with <a exist=".*" noun=".*">.*<\/a> ancestors!' ] = "Ebon Gate Festival - Feywrot Mire" ;
+		$this -> { 'location' } [ '<a exist=".*" noun="(.*)">.*<\/a> was just defeated in the Arena of the Abyss!' ] = "Arena of the Abyss" ;
 
 		// Holiday - April Fool's
 		$this -> { 'location' } [ 'Alas, poor <a exist=".*" noun="(.*)">.*<\/a>.  I knew <a exist=".*" noun=".*">him<\/a>, Horatio.' ] = "Elanthia / April Fool's" ;

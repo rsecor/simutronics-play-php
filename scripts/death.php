@@ -144,13 +144,10 @@ class death
 	{
 		$local_buf = preg_replace ( "/is off to a rough start!  (She|He) /i" , "" , trim ( $buf ) ) ;
 
-                $type = $gameArray [ 'local' ] [ 'type' ] ;
-
-                $found = FALSE ;
+		$type = $gameArray [ 'local' ] [ 'type' ] ;
 
 		if ( $type == 'XML' )
 		{
-
 			$death_xml = "<pushStream id=\"death\"\/> * " ;
 
 			$death_list = preg_split ( "/" . $death_xml . "/i" , $local_buf ) ;
@@ -191,7 +188,20 @@ class death
 				print '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_name . ' has died near ' . $death_location . "\n" ;
 				$output .= '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_name . ' has died near ' . $death_location . "\n" ;
 				file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $gameArray [ 'local' ] [ 'game_code' ] . ": " . $character_name . ": " . $death_location . ": " . $buf . "\n" , FILE_APPEND ) ;
-				$found = TRUE ;
+				if ( is_callable ( array ( 'local_db' , 'connect' ) ) )
+				{
+					$log_array [ 'source' ] = __CLASS__ ;
+					$log_array [ 'game_code' ] = $gameArray [ 'local' ] [ 'game_code' ] ;
+					$log_array [ 'character_name' ] = $character_name ;
+					$log_array [ 'location_name' ] = $death_location ;
+					$log_array [ 'original_text' ] = $buf ;
+					$log_array [ 'date_utc' ] = date ( "Y-m-d H:i:s" ) ;
+					$local_db = new local_db ( ) ;
+					$local_db -> connect ( ) ;
+					$local_db -> insert ( __CLASS__ , $log_array ) ;
+					$local_db -> close ( ) ;
+					unset ( $local_db ) ;
+				}
 			}
 		}
 		elseif ( preg_match_all ( "/(\*)/" , $buf , $matches ) )
@@ -207,33 +217,6 @@ class death
 				}
 			}
 		}
-
-		if ( preg_match_all ( "/(\*)/" , $buf , $matches ) )
-		{
-			if ( count ( $matches ) > 2 )
-			{
-				print "Check for multiple login/logout/death: " . $buf . "\n" ;
-			}
-		}
-
-		if ( $found )
-		{
-			if ( is_callable ( array ( 'local_db' , 'connect' ) ) )
-			{
-				$log_array [ 'source' ] = __CLASS__ ;
-				$log_array [ 'game_code' ] = $gameArray [ 'local' ] [ 'game_code' ] ;
-				$log_array [ 'character_name' ] = $character_name ;
-				$log_array [ 'location_name' ] = $death_location ;
-				$log_array [ 'original_text' ] = $buf ;
-				$log_array [ 'date_utc' ] = date ( "Y-m-d H:i:s" ) ;
-				$local_db = new local_db ( ) ;
-				$local_db -> connect ( ) ;
-				$local_db -> insert ( __CLASS__ , $log_array ) ;
-				$local_db -> close ( ) ;
-				unset ( $local_db ) ;
-			}
-		}
-
 		$return [ 'gameArray' ] = $gameArray ;
 		if ( isset ( $output ) )
 		{

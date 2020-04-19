@@ -51,6 +51,7 @@ class death
 		$this -> { 'location' } [ '<a exist=".*" noun="(.*)">.*<\/a> may just be going home on <a exist=".*" noun=".*">.*<\/a> shield!' ] = "Aradhul Road / Displaced Red Forest" ;
 		$this -> { 'location' } [ '<a exist=".*" noun="(.*)">.*<\/a> was just reunited with <a exist=".*" noun=".*">.*<\/a> ancestors!' ] = "Ebon Gate Festival - Feywrot Mire" ;
 		$this -> { 'location' } [ '<a exist=".*" noun="(.*)">.*<\/a> was just defeated in the Arena of the Abyss!' ] = "Arena of the Abyss" ;
+		$this -> { 'location' } [ '<a exist=".*" noun="(.*)">.*<\/a> just perished on the Isle of Ornath!' ] = "Isle of Ornath" ;
 
 		// Holiday - April Fool's
 		$this -> { 'location' } [ 'Alas, poor <a exist=".*" noun="(.*)">.*<\/a>.  I knew <a exist=".*" noun=".*">him<\/a>, Horatio.' ] = "Elanthia / April Fool's" ;
@@ -114,6 +115,7 @@ class death
 		$this -> { 'location' } [ '<a exist=".*" noun="(.*)">.*<\/a> was just incinerated!' ] = "Unknown" ;
 		$this -> { 'location' } [ '<a exist=".*" noun="(.*)">.*<\/a> was just vaporized!' ] = "Unknown" ;
 
+		$this -> { 'dir' } = $dir ;
 		$dir_log = $dir [ 'character' ] . "/" . __CLASS__ ;
 		if ( ! ( file_exists ( $dir_log ) ) )
 		{
@@ -201,6 +203,16 @@ class death
 					$local_db -> insert ( __CLASS__ , $log_array ) ;
 					$local_db -> close ( ) ;
 					unset ( $local_db ) ;
+				}
+				if ( is_callable ( array ( 'local_twitter' , 'death_send' ) ) )
+				{
+					$local_twitter = new local_twitter ( FALSE , $this -> { 'dir' } ) ;
+					$local_twitter -> init ( ) ;
+					if ( isset ( $local_twitter -> { 'death' } ) )
+					{
+						$local_twitter -> death_send ( date ( "Y-m-d H:i:s" ) . ": " . $character_name .  ' has died near ' . $death_location ) ;
+					}
+					unset ( $local_twitter ) ;
 				}
 			}
 		}

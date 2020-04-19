@@ -68,20 +68,66 @@ class login
 				}
 				$character_action = 'login' ;
 				$character_status = '' ;
-				if ( preg_match ( "/has arrived and the adventure can truly begin!/i" , $buf ) )
-				{
-					$character_action = 'login' ;
-					$character_status = 'NEW' ;
-				}
-				elseif ( preg_match ( "/joins the adventure./i" , $buf ) )
+
+				if ( preg_match ( "/joins the adventure./i" , $buf ) )
 				{
 					$character_action = 'login' ;
 					$character_status = 'OLD' ;
+				}
+				elseif ( preg_match ( "/arrival./i" , $buf ) )
+				{
+					$character_action = 'login' ;
+					$character_status = 'OLD' ;
+				}
+				elseif ( preg_match ( "/just nodded off./" , $buf ) )
+				{
+					$character_action = 'logout' ;
+					$character_status = '' ;
 				}
 				elseif ( preg_match ( "/returns home from a hard day of adventuring./" , $buf ) )
 				{
 					$character_action = 'logout' ;
 					$character_status = '' ;
+				}
+				elseif ( preg_match ( "/has disconnected./" , $buf ) )
+				{
+					$character_action = 'logout' ;
+					$character_status = '' ;
+				}
+				elseif ( preg_match ( "/and then dissolve, leaving nothing behind./" , $buf ) )
+				{
+					$character_action = 'logout' ;
+					$character_status = '' ;
+				}
+				elseif ( preg_match ( "/leaves to correct heretical views and inspire beings toward the path of enlightenment./" , $buf ) )
+				{
+					$character_action = 'logout' ;
+					$character_status = '' ;
+				}
+				elseif ( preg_match ( "/leaves to heed the call of nature./" , $buf ) )
+				{
+					$character_action = 'logout' ;
+					$character_status = '' ;
+				}
+				elseif ( preg_match ( "/puts away his shovel and heads for the nearest tavern./" , $buf ) )
+				{
+					$character_action = 'logout' ;
+					$character_status = '' ;
+				}
+				elseif ( preg_match ( "/is going home./" , $buf ) )
+				{
+					$character_action = 'logout' ;
+					$character_status = '' ;
+				}
+				elseif ( preg_match ( "/heads off./" , $buf ) )
+				{
+					$character_action = 'logout' ;
+					$character_status = '' ;
+				}
+				elseif ( preg_match ( "/has arrived and the adventure can truly begin!/i" , $buf ) )
+				{
+					$character_action = 'login' ;
+					$character_status = 'NEW' ;
 				}
 				else
 				{
@@ -99,18 +145,6 @@ class login
 			}
 
 		}
-
-		elseif ( preg_match_all ( "/\ \*(.*)\ has arrived and the adventure can truly begin\!/i" , $buf , $matches ) )
-		{
-			if ( isset ( $matches [ 1 ] [ 0 ] ) )
-			{
-				$character_name = $matches [ 1 ] [ 0 ] ;
-				$character_action = 'login' ;
-				$character_status = 'NEW' ;
-				file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ": " . $character_action . ": " . $character_status . "\n" , FILE_APPEND ) ;
-				$output = '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_action . ": " . $character_name . " (NEW)\n" ;
-			}
-		}
 		elseif ( preg_match_all ( "/\ \*(.*)\ joins\ the\ adventure\./i" , $buf , $matches ) )
 		{
 			if ( isset ( $matches [ 1 ] [ 0 ] ) )
@@ -120,6 +154,17 @@ class login
 				$character_status = '' ;
 				file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ": " . $character_action . ": " . $character_status . "\n" , FILE_APPEND ) ;
 				$output = '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_action . ": " . $character_name . "\n" ;
+			}
+		}
+		elseif ( preg_match_all ( "/\ \*(.*)\ has arrived and the adventure can truly begin\!/i" , $buf , $matches ) )
+		{
+			if ( isset ( $matches [ 1 ] [ 0 ] ) )
+			{
+				$character_name = $matches [ 1 ] [ 0 ] ;
+				$character_action = 'login' ;
+				$character_status = 'NEW' ;
+				file_put_contents ( $this -> { 'log' } , date ( "Ymd-His" ) . ": " . $character_name . ": " . $character_action . ": " . $character_status . "\n" , FILE_APPEND ) ;
+				$output = '[' . __CLASS__ . ' @ ' . date ( "Ymd-His" ) . ']: ' . $character_action . ": " . $character_name . " (NEW)\n" ;
 			}
 		}
 		elseif ( preg_match_all ( "/\ \*(.*)\ returns home from a hard day of adventuring\./i" , $buf , $matches ) )
@@ -155,19 +200,22 @@ class login
 
 		if ( $found )
 		{
-			if ( is_callable ( array ( 'local_db' , 'connect' ) ) )
+			if ( ! ( preg_match ( "/\ /" , $character_name ) ) )
 			{
-				$log_array [ 'source' ] = __CLASS__ ;
-				$log_array [ 'game_code' ] = $gameArray [ 'local' ] [ 'game_code' ] ;
-				$log_array [ 'character_name' ] = $character_name ;
-				$log_array [ 'action' ] = $character_action ;
-				$log_array [ 'original_text' ] = $buf ;
-				$log_array [ 'date_utc' ] = date ( "Y-m-d H:i:s" ) ;
-				$local_db = new local_db ( ) ;
-				$local_db -> connect ( ) ;
-				$local_db -> insert ( __CLASS__ , $log_array ) ;
-				$local_db -> close ( ) ;
-				unset ( $local_db ) ;
+				if ( is_callable ( array ( 'local_db' , 'connect' ) ) )
+				{
+					$log_array [ 'source' ] = __CLASS__ ;
+					$log_array [ 'game_code' ] = $gameArray [ 'local' ] [ 'game_code' ] ;
+					$log_array [ 'character_name' ] = $character_name ;
+					$log_array [ 'action' ] = $character_action ;
+					$log_array [ 'original_text' ] = $buf ;
+					$log_array [ 'date_utc' ] = date ( "Y-m-d H:i:s" ) ;
+					$local_db = new local_db ( ) ;
+					$local_db -> connect ( ) ;
+					$local_db -> insert ( __CLASS__ , $log_array ) ;
+					$local_db -> close ( ) ;
+					unset ( $local_db ) ;
+				}
 			}
 		}
 

@@ -38,6 +38,7 @@ class who
 			$output = "[" . __CLASS__ . "] " . $input ;
 			if ( socket_write ( $this -> { 'socket' } , $input , strlen ( $input ) ) )
 			{
+				sleep ( 1 ) ;
 			}
 			$this -> { 'time' } = time ( ) ;
 		}
@@ -63,6 +64,7 @@ class who
 			$output = "[" . __CLASS__ . "] " . $input ;
 			if ( socket_write ( $this -> { 'socket' } , $input , strlen ( $input ) ) )
 			{
+				sleep ( 1 ) ;
 			}
 			$this -> { 'time' } = time ( ) ;
 			$this -> { 'who_full' } = '' ;
@@ -84,6 +86,7 @@ class who
 
 		if ( preg_match ( "/Active Players: /i" , $this -> { 'who_full' } ) )
 		{
+			$date_utc = date ( "Y-m-d H:i:s" ) ;
 			$array = preg_split ( "/\n/" , $this -> { 'who_full' } ) ;
 			foreach ( $array as $line_no => $line )
 			{
@@ -105,7 +108,7 @@ class who
 										$log_array [ 'game_code' ] = $gameArray [ 'local' ] [ 'game_code' ] ;
 										$log_array [ 'character_name' ] = $character_name ;
 										$log_array [ 'original_text' ] = $character_info ;
-										$log_array [ 'date_utc' ] = date ( "Y-m-d H:i:s" ) ;
+										$log_array [ 'date_utc' ] = $date_utc ;
 										$local_db = new local_db ( ) ;
 										$local_db -> connect ( ) ;
 										$local_db -> insert ( __CLASS__ , $log_array ) ;
@@ -135,7 +138,7 @@ class who
 							$log_array [ 'game_code' ] = $gameArray [ 'local' ] [ 'game_code' ] ;
 							$log_array [ 'total' ] = $active_players ;
 							$log_array [ 'original_text' ] = $line ;
-							$log_array [ 'date_utc' ] = date ( "Y-m-d H:i:s" ) ;
+							$log_array [ 'date_utc' ] = $date_utc ;
 							$local_db = new local_db ( ) ;
 							$local_db -> connect ( ) ;
 							$local_db -> insert ( __CLASS__ , $log_array ) ;

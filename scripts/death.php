@@ -106,6 +106,11 @@ class death
 		$this -> { 'location' } [ '<a exist=".*" noun="(.*)">.*<\/a> was just scared to death!' ] = "Elanthia / Halloween" ;
 		$this -> { 'location' } [ '<a exist=".*" noun="(.*)">.*<\/a>, table for two\?  Er... never mind, make that table for one.' ] = "Elanthia / Halloween" ;
 
+		// Kraken's Falls & Great Western Sea
+		$this -> { 'location' } [ '<a exist=".*" noun="(.*)">.*\'s<\/a> life on land appears to be as rough as <a exist=".*" noun=".*">.*</a> life at sea.' ] = "Kraken's Fall' ;
+		$this -> { 'location' } [ '<a exist=".*" noun="(.*)">.*<\/a> just sank to the bottom of the Tenebrous Cauldron!' ] = 'Tenebrous Cauldron' ;
+	
+
 		// Other - Custom
 		$this -> { 'location' } [ '<a exist=".*" noun="(.*)">.*<\/a> has just returned to Gosaena!' ] = "Unknown / Custom" ;
 
